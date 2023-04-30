@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Home{%endblock%}
+{% block content %}
+<br>
+<br>
+<h1 class="title">RMS POPE Terminal
+</h1>
+<hr>
+<p class="subtitle">
+  <h2><strong>Welcome!</strong></h2>
+  <br> Please select an option below in the RMS Time Card System
+  <br>
+  <hr>
+  <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
+  <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>  
+  {% if user.is_authenticated %}
+    <a type="button" class="btn btn-dark" href="/Search">Search Records</a>
+  {% endif %}
+  <br>
+  <hr>
+    <strong>Other Applications</strong>
+      <hr>
+      <a type="button" class="btn btn-dark" href="https://my214.geotab.com/">GeoTab</a>
+      <a type="button" class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
+{% endblock %}

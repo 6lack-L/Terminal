@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}TimeCard{%endblock%}
+{% block content %}
+<br>
+<br>
+<br>
+<div class="card" style="width: 50rem;">
+    <div class="card-body">
+      <h3 class="card-title">Your Timecard</h5>
+      <h5 class="card-text">
+        <li>Name     :: {{ Employee }}</li>
+        <li>Vehicle  :: {{ Vehicle }}</li>
+        <li>Time OUT :: {{ Time_OUT }}</li>
+      </h5>
+<br>
+{% if user.is_authenticated %}
+        <a href="/Admin" class="btn btn-primary">Close</a>
+        <a href="/S-OUT" class="btn btn-secondary">Edit</a>
+{% elif user == 1 %}
+        <a href="/Admin" class="btn btn-primary">Close</a>
+        <a href="/S-OUT" class="btn btn-secondary">Edit</a>
+{% else %}
+        <a href="/" class="btn btn-primary">Close</a>
+        <a href="/Edit" class="btn btn-secondary">Edit</a>
+{% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+

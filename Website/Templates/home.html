@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Home{%endblock%}
+{% block content %}
+<br>
+<strong><h1 class="title">RMS POPE Terminal</strong>
+</h1>
+<hr>
+<p class="subtitle">
+  <h2>Welcome!</h2>
+  <br><strong>
+   Please select an option below in the RMS Time Card System
+   </strong>
+  <br>
+  <hr>
+  {% if current_user.id == 1 %}
+    <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
+    <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>
+    <br> 
+    <hr>         
+    <a type="button" class="btn btn-dark" href="/Search">Search Records</a>
+    <a type="button" class="btn btn-dark" href="/Delete">Delete</a>
+    <a type="button" class="btn btn-dark" href="/Edit">Edit</a>
+    <a type="button" class="btn btn-dark" href="/Report">Report</a>
+  {% else %}
+    <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
+    <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-Out</a>
+    <a type="button" class="btn btn-dark" href="/Search">Search Records</a>
+  {% endif%}  
+  <br>
+  <hr>
+  {% if current_user.id == 1 %}
+    <strong>Other Applications</strong>
+      <hr>
+      <button type="button" class="btn btn-dark" href="https://my214.geotab.com/">GeoTab</button>
+      <a type="button" class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
+      <a type="button" class="btn btn-dark" href="/">Rms Database</a>
+    {% else %}
+      <a type="button" class="btn btn-dark" href="https://my214.geotab.com/">GeoTab</a>
+      <a type="button" class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
+  {% endif%}
+{% endblock %}

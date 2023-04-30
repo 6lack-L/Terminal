@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Clock Out{%endblock%}
+{% block content %}
+<h1 class="title">
+    RMS POPE TimeCard System
+</h1>
+  <form action="{{ url_for("views.Clock_Out")}}" method="POST">
+    {{ form.hidden_tag() }}
+
+    <h3 align="center">Clock-OUT</h3>
+    <div class="form-group">
+      <label for="EmpName">Enter Your Employee ID</label>
+      {{ form.Employee(
+        class="form-control",
+        placeholder="Employee ID") }}
+      <br/>
+    </div>
+
+    <div class="form-group">
+      <label for="EmpVeh">Enter Vehicle</label>
+      {{ form.Vehicle(
+        class="form-control",
+        placeholder="Enter Vehicle") }}
+        <br/>
+      </div>
+
+    <br/>
+    {{ form.submit(class="btn
+     btn-primary", href="/Card2") }}
+  </form>
+{% endblock %}
