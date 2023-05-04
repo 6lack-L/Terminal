@@ -17,7 +17,7 @@ import xlwings as xw
 
 xw.Book ('Timelog.xlsx')
 #variable for location of csv(change accordingly!!)
-Time_Card = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Website/timelog.csv'
+Time_Card = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Terminal/Website/timelog.csv'
 
 #read CSV file into dataframe
 df = pd.read_csv(Time_Card)
