@@ -7,13 +7,14 @@
 </h1>
 <hr>
 <p class="subtitle">
-  <h2><strong>Welcome!</strong></h2>
-  <br> Please select an option below in the RMS Time Card System
-  <br>
-  <hr>
-  <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
-  <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>  
+  <h2><strong>Welcome Please Login!</strong></h2>
+  <br> Select an option below
+  <div>
+  <!--<a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
+  <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>  -->
   {% if user.is_authenticated %}
+    <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
+    <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>
     <a type="button" class="btn btn-dark" href="/Search">Search Records</a>
   {% endif %}
   <br>

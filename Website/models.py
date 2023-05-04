@@ -43,7 +43,8 @@ class ClockOut(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     in_id = db.Column(db.Integer, db.ForeignKey('clockin.id'), unique=True)
     clock_in = db.relationship('ClockIn', backref='clockout', uselist=False, foreign_keys=[in_id])
-
+    def __repr__(self):
+        return '{}, {}'.format(self.Vehicle_2, self.Clock_Out)
 #CLOCK IN DATABASE TABLE
 class ClockIn(db.Model):
     __tablename__ = "clockin"
@@ -60,7 +61,8 @@ class ClockIn(db.Model):
     out_id = db.Column(db.Integer, db.ForeignKey('clockout.id'), unique=True)
    
     clock_out = db.relationship('ClockOut', backref='clockin', uselist=False, foreign_keys=[out_id])
-
+    def __repr__(self):
+        return '{}, {},{}, {},{}, {}'.format(self.Employee, self.Date, self.Description,self.Vehicle,self.Runs,self.Location)
 
 ##########################################################################################
 #EMPLOYEE DATABASE#

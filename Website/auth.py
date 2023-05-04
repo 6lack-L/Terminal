@@ -30,6 +30,9 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user:
+            if user.id == 1:
+                user.roles = "Admin"
+                db.session.commit()
             if check_password_hash(user.password, Fp):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)

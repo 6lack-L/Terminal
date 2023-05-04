@@ -141,57 +141,79 @@ def Clock_out(EmpVeh_='',EmpName_=''):
     TimeCard_file = open(Time_Card, 'r')
     TimeCard = TimeCard_file.readline()
     
-    sum_h = 0
-    sum_m = 0
+    try:
+        sum_h = 0
+        sum_m = 0
 
-    # read the file if you have entered any name
-    while TimeCard != '':
-        found =  TimeCard.startswith(employee)
-        word = [line.split(',') for line in TimeCard.splitlines()]
-        if found:
-            start = word[0][-1]
-            end = word[0][-1]
-            if end == '':
-                end = word[0][6]
-            else:
-                end = Clock_out
-        
-            #split the date
-            clock_in = start.split(':')
-            clock_out = end.split(':')
+        while TimeCard != '':
+            found = TimeCard.startswith(employee)
+            word = [line.split(',') for line in TimeCard.splitlines()]
 
-            #convert time from string to integer
-            clock_out_int_h = int(clock_out[0])
-            clock_out_int_m = int (clock_out[1])
-            clock_in_int_h = int(clock_in[0])
-            clock_in_int_m = int (clock_in[1])
+            if found:
+                start = word[0][-1]
+                end = word[0][-1]
 
-            #calculate Working Hours
-            if clock_out_int_m > clock_in_int_m:
-                hours = (clock_out_int_h - clock_in_int_h)
-                minutes = (clock_out_int_m - clock_in_int_m)
-            else:
-                hours = (clock_out_int_h - clock_in_int_h) - 1
-                minutes = 60 - (clock_in_int_m - clock_out_int_m)
-            sum_h += hours
-            sum_m += minutes
-            if sum_h < 0:
-                sum_h += 12
-            if sum_m == 60:
-                sum_m = 0
-                sum_h += 1
-        TimeCard = TimeCard_file.readline()
+                if end == '':
+                    end = word[0][6]
+                else:
+                    end = Clock_out
 
-    #Collect Total Hours of the Employee
-    if sum_m > 60:
-        sum = (sum_m / 60)
-        split_min = str(sum).split('.')
-        int_part = int(split_min[0])
-        decimal = int((sum - int_part) * 60)
-        Total_hours = sum_h + int_part
-#        print("Weekly Working Hours is:", Total_hours, "Hours and", decimal, "Minutes", '\n')
-#    else:
-#        print("Weekly Working Hours is:", sum_h, "Hours and", sum_m,"Minutes", '\n')
+                # Split the time
+                clock_in = start.split(':')
+                clock_out = end.split(':')
+
+                # Convert time from string to integer
+                clock_out_int_h = int(clock_out[0])
+                clock_out_int_m = int(clock_out[1])
+                clock_in_int_h = int(clock_in[0])
+                clock_in_int_m = int(clock_in[1])
+
+                # Calculate working hours
+                if clock_out_int_m > clock_in_int_m:
+                    hours = clock_out_int_h - clock_in_int_h
+                    minutes = clock_out_int_m - clock_in_int_m
+                else:
+                    hours = (clock_out_int_h - clock_in_int_h) - 1
+                    minutes = 60 - (clock_in_int_m - clock_out_int_m)
+
+                sum_h += hours
+                sum_m += minutes
+
+                if sum_h < 0:
+                    sum_h += 12
+
+                if sum_m == 60:
+                    sum_m = 0
+                    sum_h += 1
+
+        # Collect total hours of the employee
+        if sum_m > 60:
+            sum = sum_m / 60
+            split_min = str(sum).split('.')
+            int_part = int(split_min[0])
+            decimal = int((sum - int_part) * 60)
+            Total_hours = sum_h + int_part
+            print("Total Working Hours is:", Total_hours, "Hours and", decimal, "Minutes", '\n')
+        else:
+            print("Total Working Hours is:", sum_h, "Hours and", sum_m, "Minutes", '\n')
+
+    except Exception as e:
+        sum_h = 0
+        sum_m = 0
+
+        while TimeCard != '':
+            found = TimeCard.startswith(employee)
+            word = [line.split(',') for line in TimeCard.splitlines()]
+
+            if found:
+                start = word[0][-1]
+                end = word[0][-1]
+
+                if end == '':
+                    end = word[0][6]
+                else:
+                    end = Clock_out        
+                print("An error occurred:", str(e))
 
     #added function to make decision if you want to work on this file or exit
 #    func = input("Enter Q to quit or Press M for main menu:")
@@ -230,13 +252,13 @@ def TimeReport():
     TimeCard_file.close()
 
     #Added function to make decision if want to work or exit
-    func = input("Enter Q to quit or Press M for main menu:")
-    if func == "Q" or func =="q":
-        quit()
-    elif func == "M" or func =="m":
-        return main()
-    else:
-        print("Incorrect input, Please Try Again \n")
+#    func = input("Enter Q to quit or Press M for main menu:")
+#    if func == "Q" or func =="q":
+#        quit()
+#    elif func == "M" or func =="m":
+#        return main()
+#    else:
+#        print("Incorrect input, Please Try Again \n")
 
 #fix this so it calls add function to append new data to file for clock in/clock out
 def Edit():
@@ -308,24 +330,24 @@ def Edit():
     #Close the file
     TimeCard_file.close()
     
+#Check if user wants to add another record to the file
+#    func = input("Enter Q to quit or Press M for main menu:")
+#    if func == "Q" or func =="q":
+#        quit()
+#    elif func == "M" or func =="m":
+#        return main()
+#    else:
+#        print("Incorrect input, Please Try Again \n")
 
-    #Check if user wants to add another record to the file
-    func = input("Enter Q to quit or Press M for main menu:")
-    if func == "Q" or func =="q":
-        quit()
-    elif func == "M" or func =="m":
-        return main()
-    else:
-        print("Incorrect input, Please Try Again \n")
 
-#This function will search employee and his working hours
-
+#This function will search employee and his working hours 
 def Search(EmpName_=''):
     found = False
     sum_h = 0
     sum_m = 0
     EmpName  = EmpName_
     search = EmpName.upper()
+    lst = []
 
     #open the time card file and search name
     TimeCard_file = open(Time_Card, 'r')
@@ -341,11 +363,13 @@ def Search(EmpName_=''):
             Runs = word[0][4]
             Area = word[0][5]
 
-            print(TimeCard)
-            print('worktype:',worktype)
-            print('Vehicle:',vehicle)
-            print('Runs:',Runs)
-            print('Location:',Area)
+            lst.append(TimeCard)
+
+#            print(TimeCard)
+#            print('worktype:',worktype)
+#            print('Vehicle:',vehicle)
+#            print('Runs:',Runs)
+#            print('Location:',Area)
             start = word[0][6]
             print("start:",start)
             end = word[0][-1]
@@ -363,6 +387,7 @@ def Search(EmpName_=''):
             clock_out_int_m = int (clock_out[1])
             clock_in_int_h = int(clock_in[0])
             clock_in_int_m = int (clock_in[1])
+
 
             #calculate Working Hours
             if clock_out_int_m > clock_in_int_m:
@@ -386,7 +411,7 @@ def Search(EmpName_=''):
                     sum_h += 1
                 print("Total Hours Worked:", hours, 'Hours and', minutes,"Minutes", '\n' )
         TimeCard = TimeCard_file.readline()
-
+     
     #Collect Total Hours of the Employee
     if sum_m > 60:
         sum = (sum_m / 60)
@@ -399,7 +424,7 @@ def Search(EmpName_=''):
         print("Total Working Hours is:", sum_h, "Hours and", sum_m,"Minutes", '\n')
     #close the file
     TimeCard_file.close()
-    
+    return lst
 
     #added function to make decision if you want to work on this file or exit
 #    func = input("Enter S to Keep Searching or Press M for main menu:")

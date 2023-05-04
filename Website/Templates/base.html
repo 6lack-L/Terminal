@@ -16,7 +16,8 @@
     />
 
     <title>{% block title %}Base{% endblock %}</title>
-<!-- /favicon code
+
+    <!-- Favicon code-->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -24,73 +25,149 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-<!-- background image-->
+
+    <!-- Background image-->
     <style>
-      body {
-        background-image: url({{url_for( 'static', filename='Logo.jpg')}});
-        background-size: 100%, 100%;
-        background-attachnent: fixed;
-        background-repeat:no-repeat; 
-
+      @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+  
+      * {
+        margin: 0;
+        padding: 0;
+        top: 10px
       }
-      </style>
-  </head>
-  <body class="p-3 mb-2 bg-dark text-black">
-    
-    <nav class="navbar navbar-expand-lg navbar-light bg-danger text-black" >
-      <div class="container-fluid">
-        <a class="navbar-brand" class="nav-item nav-link" id="home" href="/">RMS Pope Inc</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            {% if current_user.id == 1 %}
-            <li class="nav-item">
-              <a class="nav-item nav-link text-dark" href="/Admin">Home</a>
-            </li>
-            {% endif %}
-            {% if current_user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-item nav-link text-dark" id="logout" href="/logout">Logout</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Dropdown
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Action</a></li>
-                  <li><a class="dropdown-item" href="#">Another action</a></li>
-                  <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="#">Something else here</a></li>
-                </ul>
-            {% else %}
-              </li>
-              <li class="nav-item">
-                <a class="nav-item nav-link" id="home" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-item nav-link" id="login" href="/login">Login</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-item nav-link" id="sign_up" href="/signup">Signup</a>            
-              </li>
-            {% endif %}
-          </ul>
-          {% if current_user.id == 1 %}
-          <div class="w-100 p-3">
-            <div class="d-flex justify-content-end">
-              <form class="d-flex" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-dark" type="submit">Search</button>
-              </form>
-            </div>
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </nav>
+      .container {
+        margin-top: 40px; /* Adjust the value as needed to increase or decrease the space between the navigation bar and the content */
+      }
+  
+      body {
+        background-image: url({{ url_for('static', filename='Logo.jpg') }});
+        background-size: 100% 100%;
+        background-attachment: fixed;
+        background-repeat: no-repeat; 
+      }
+      
+      .container nav {
+        width: 100%;
+        height: 35px;
+        background: #444759;
+        border-bottom: 1px solid #3d3f50;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 999;
+      }
+  
+      nav ul {
+        width: 55%;
+        height: 100%;
+        list-style: none;
+        transition: all 0.5s ease;
+        display: flex;
+        justify-content: flex-start;
+      }
+  
+      nav ul li {
+        width: 20%;
+        text-align: center;
+        padding: 5px 15px;
+        cursor: pointer;
+        color: #eee;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        transition: all 0.5s ease;
+      }
+  
+      nav ul li:nth-child(2) {
+        margin-left: 50px;
+      }
+  
+      nav ul li:hover {
+        color: #ea3b50;
+        box-shadow: inset 0 5px #ea3b50;
+      }
+  
+      /* sub-menu */
+  
+      nav ul li ul.sub-nav {
+        position: absolute;
+        top: 30px;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        background: #444759;
+        border-top: 1px solid #3d3f50;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.14), -1px 0px 1px rgba(0, 0, 0, 0.14);
+        visibility: hidden;
+        opacity: 0;
+      }
+  
+      nav ul li ul.sub-nav li {
+        color: #eee;
+        font-size: 14px;
+        width: 100%;
+        padding: 15px 0;
+      }
+  
+      nav ul li ul.sub-nav li:hover {
+        color: #ea3b50;
+        box-shadow: 0 0;
+      }
+  
+      nav ul li:hover ul.sub-nav {
+        visibility: visible;
+        opacity: 1;
+      }
+    </style>
+  </head>
+<body>
+  {% if current_user.is_authenticated %}
+    <div class="container">
+      <nav>
+        <ul>
+          <li><a id="home" href="/">RMS Pope Inc</a></li>
+          <li><a id="profile" href="/">Profile</a>
+            <ul class="sub-nav">
+              <li><a id="View" href="/ViewHours">View hours</a></li>
+              <li><a id="edit" href="/">edit profile</a></li>
+              <li><a id="contact" href="/">Contact us</a></li>
+              <li><a id="settings" href="/">settings</a></li>
+              <li><a id="Logout" href="/logout">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+  {% elif current_user.id == 1 %}
+    <div class="container">
+      <nav>
+        <ul>
+          <li><a id="home" href="/Admin">RMS Pope Inc</a></li>
+          <li>Profile
+            <ul class="sub-nav">
+              <li><a id="View" href="/ViewHours">View hours</a></li>
+              <li><a id="edit" href="/">edit profile</a></li>
+              <li><a id="Admin" href="/">Admin Console</a></li>
+              <li><a id="settings" href="/">settings</a></li>
+              <li><a id="Logout" href="/logout">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+  {% else %}
+    <div class="container">
+      <nav>
+        <ul>
+          <li><a id="Home" href="/">Home</a></li>
+          <li><a id="Login" href="/login">Login</a></li>
+          <li><a id="SignUp" href="/signup">SignUp</a></li>
+        </ul>
+      </nav>
+
+    <div class="header"></div>
+  </div>
+  {% endif%} 
+
 
 
     {% with messages = get_flashed_messages(with_categories=true) %} 
@@ -116,8 +193,8 @@
     {% endwith %}
 
 
-    <div class="container">{% block content %} {% endblock %}
-    </div>
+  <div class="container">{% block content %} {% endblock %}
+  </div>
     <script
         src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
@@ -145,7 +222,7 @@
     window.location.href = "/";
   });
   }
-</script>
+  </script>
 {% endblock %}
   
 

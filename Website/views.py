@@ -22,7 +22,6 @@ views = Blueprint('views',__name__)
 @views.route("/")
 def home():
     if id == 1:
-        flash('admin',category='success')
         return render_template('home.html',user=current_user.id)
     else:
         return render_template('index.html',user=current_user)
@@ -33,10 +32,8 @@ def home():
 def index():
     id = current_user.id
     if id == 1:
-        flash('admin',category='success')
         return render_template('home.html',user=current_user.id)
     else:
-        flash('user',category='success')
         return redirect(url_for('views.home'))
 
 
@@ -52,10 +49,6 @@ def Card():
 def Card2():
     return render_template("card2.html")
 
-@login_required
-@views.route("/Search", methods=(["GET","POST"]))
-def Search():
-   return render_template("Search_template.html",user=current_user)
 
 
 @views.route("/Clock-IN", methods=(["GET","POST"]))
@@ -149,7 +142,7 @@ def Clock_Out():
         out_id = db.session.query(models.ClockOut).filter(models.ClockOut.user_id == usr).order_by(models.ClockOut.Clock_Out.desc()).first()
         
 
-        if len(Fn) != current_user.Emp_id:
+        if Fn != current_user.Emp_id:
             flash('Incorrect Employee ID', category='error')
         elif usr in range(1,6):####add more admins   
             if out_id and in_id is not None:
@@ -188,27 +181,35 @@ def Clock_Out():
             return render_template("card2.html",user=usr, Employee=Emp_Name, Time_OUT=Time_OUT,Vehicle=Emp_Veh)
         form.Employee.data = ''
         form.Vehicle.data = ''
-        return render_template("Clock_Out_form.html",out=out,user=usr)
+        return render_template("Clock_Out_form.html",out=out,form=form,user=usr)
     return render_template("Clock_Out_form.html",form=form,user=current_user.id)
 
 
-@views.route("/Sub_search", methods=(["GET","POST"]))
+@login_required
+@views.route("/ViewHours")
+def ViewHours():
+    usr = current_user.id
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    Hours = current_user.Emp_id
+    search = T.Search(Hours)
+    return render_template("ViewHours.html",user=usr, field=field,search=search)
+
+@login_required
+@views.route("/Search", methods=(["GET","POST"]))
 def Find():
-   FormName = request.form.get("EmpName_")
-   Fn = str(FormName)
-   Search = T.Search(Fn)
-   x = print('TimeCard')
+    form = models.SearchForm()
+    usr = current_user.id
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    Search = []  # Initialize the variable with an empty list
+    if form.validate_on_submit():
+        FormName = form.searched.data
+        Fn = str(FormName)
+        Search = T.Search(Fn)
+        return render_template("card3.html", user=usr, field=field, form=form, search=Search)  
+    FormName = ''
+    return render_template("Search_template.html", form=form, Search=Search, user=usr, field=field)
 
-#  Employee = Timecard(name=Fn, Vehicle2=Fv, Time_OUT=Time_OUT)
-#            db.session.add(Employee)
-#            db.session.commit()
-#  delete?   login_user(Employee, remember=True)
-
-   if request.method == "POST":
-      return redirect(url_for("views.Searchdata"))
-   return render_template("Search_template.html",Search=Search, x=x,user=current_user)
-
-
+@login_required
 @views.route("/Delete")
 def Delete():
    #T.Delete()
