@@ -122,7 +122,23 @@
     </style>
   </head>
 <body>
-  {% if current_user.is_authenticated %}
+  {% if current_user.id == 1 %}
+    <div class="container">
+      <nav>
+        <ul>
+          <li><a id="home" href="/">RMS Pope Inc</a></li>
+          <li>Profile
+            <ul class="sub-nav">
+              <li><a id="View" href="/ViewHours">View hours</a></li>
+              <li><a id="edit" href="/">edit profile</a></li>
+              <li><a id="Admin" href="/">Admin Console</a></li>
+              <li><a id="settings" href="/">settings</a></li>
+              <li><a id="Logout" href="/logout">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+  {% elif current_user.is_authenticated %}
     <div class="container">
       <nav>
         <ul>
@@ -132,22 +148,6 @@
               <li><a id="View" href="/ViewHours">View hours</a></li>
               <li><a id="edit" href="/">edit profile</a></li>
               <li><a id="contact" href="/">Contact us</a></li>
-              <li><a id="settings" href="/">settings</a></li>
-              <li><a id="Logout" href="/logout">Logout</a></li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-  {% elif current_user.id == 1 %}
-    <div class="container">
-      <nav>
-        <ul>
-          <li><a id="home" href="/Admin">RMS Pope Inc</a></li>
-          <li>Profile
-            <ul class="sub-nav">
-              <li><a id="View" href="/ViewHours">View hours</a></li>
-              <li><a id="edit" href="/">edit profile</a></li>
-              <li><a id="Admin" href="/">Admin Console</a></li>
               <li><a id="settings" href="/">settings</a></li>
               <li><a id="Logout" href="/logout">Logout</a></li>
             </ul>

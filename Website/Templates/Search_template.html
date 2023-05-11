@@ -16,7 +16,7 @@
       <p class="subtitle">
         <strong>Enter a name to view previous Records</strong>
       </p>
-      <form action="{{ url_for("views.Find")}}" method="POST">
+      <form action="{{ url_for("views.find")}}" method="POST">
         {{ form.hidden_tag() }}
         <div class="form-group">
           <label for="searched">Enter Your Employee ID</label>
@@ -25,9 +25,8 @@
             placeholder="Employee ID") }}
         </div>
         <br/>
-        {{ form.submit(class="btn
-         btn-primary", href="/Card2") }}
-        </form>
+        {{ form.submit(class="btn btn-primary", href="/Card3") }}
+      </form>
     </div>
   </section>
 {% endblock %}

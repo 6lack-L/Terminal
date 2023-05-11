@@ -16,16 +16,8 @@
         <li>Area     :: {{ Location }}</li>
       </h5>
 <br>
-{% if user.is_authenticated %}
-        <a href="/Admin" class="btn btn-primary">Close</a>
-        <a href="/Clock-IN" class="btn btn-secondary">Edit</a>
-{% elif user == 1 %}
-        <a href="/Admin" class="btn btn-primary">Close</a>
-        <a href="/Clock-IN" class="btn btn-secondary">Edit</a>
-{% else %}
         <a href="/" class="btn btn-primary">Close</a>
-        <a href="/Edit" class="btn btn-secondary">Edit</a>
-{% endif %}
+        <a href="/Clock-IN" class="btn btn-secondary">Edit</a>
     </div>
   </div>
 {% endblock %}

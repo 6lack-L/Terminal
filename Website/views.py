@@ -19,22 +19,11 @@ from sqlalchemy import update, text
 views = Blueprint('views',__name__)
 
 
-@views.route("/")
-def home():
-    if id == 1:
-        return render_template('home.html',user=current_user.id)
-    else:
-        return render_template('index.html',user=current_user)
 
 
-@login_required
-@views.route("/Admin", methods=['GET', 'POST'])
+@views.route("/", methods=['GET', 'POST'])
 def index():
-    id = current_user.id
-    if id == 1:
-        return render_template('home.html',user=current_user.id)
-    else:
-        return redirect(url_for('views.home'))
+    return render_template('index.html')
 
 
 @views.route("/Cancel", methods=['Get'])
@@ -42,16 +31,22 @@ def Cancel():
    menu = T.main()
    return render_template("input_form.html",menu=menu)
 
-@views.route("/Card", methods=(["GET","POST"]))
+#Clockin/Clockout Card pages
+@views.route("/Card", methods=["GET","POST"])
 def Card():
     return render_template("card.html")
-@views.route("/Card2", methods=(["GET","POST"]))
+@views.route("/Card2", methods=["GET","POST"])
 def Card2():
     return render_template("card2.html")
 
+#For searching records pages
+@views.route("/Card3", methods=["GET", "POST"])
+def card3():
+    return render_template("card3.html")
 
 
-@views.route("/Clock-IN", methods=(["GET","POST"]))
+
+@views.route("/Clock-IN", methods=["GET","POST"])
 def Clock_in():
     Employee = None
     id = current_user.id
@@ -186,28 +181,28 @@ def Clock_Out():
 
 
 @login_required
-@views.route("/ViewHours")
+@views.route("/ViewHours", methods=["GET", "POST"])
 def ViewHours():
     usr = current_user.id
     field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
     Hours = current_user.Emp_id
-    search = T.Search(Hours)
+    Emp_id = str(Hours)
+    search = T.Search(EmpName_=Emp_id)
     return render_template("ViewHours.html",user=usr, field=field,search=search)
 
+@views.route("/search", methods=["GET", "POST"])
 @login_required
-@views.route("/Search", methods=(["GET","POST"]))
-def Find():
+def find():
     form = models.SearchForm()
     usr = current_user.id
     field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
-    Search = []  # Initialize the variable with an empty list
+    search_results = []  # Initialize the variable with an empty list
     if form.validate_on_submit():
-        FormName = form.searched.data
-        Fn = str(FormName)
-        Search = T.Search(Fn)
-        return render_template("card3.html", user=usr, field=field, form=form, search=Search)  
-    FormName = ''
-    return render_template("Search_template.html", form=form, Search=Search, user=usr, field=field)
+        form_name = form.searched.data
+        search_results = T.Search(form_name) 
+        return render_template("card3.html", user=usr, field=field, form=form, search=search_results)  
+    return render_template("Search_template.html", form=form, search=search_results, user=usr, field=field)
+
 
 @login_required
 @views.route("/Delete")
