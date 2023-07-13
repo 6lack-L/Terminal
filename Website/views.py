@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,redirect, url_for, request, jsonify, flash, session
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash, session, send_file, abort
 from Website import models
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db   ##means from __init__.py import db
@@ -11,19 +11,23 @@ from wtforms import SearchField, StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import  SQLAlchemy
 import datetime
-import json
-from sqlalchemy import update, text
-
-
 
 views = Blueprint('views',__name__)
-
 
 
 
 @views.route("/", methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
+
+@views.route("/Profile", methods=['GET', 'POST'])
+def profile():
+    usr = current_user.id
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    Hours = current_user.Emp_id
+    Emp_id = str(Hours)
+    search = T.Search(EmpName_=Emp_id)
+    return render_template("profile.html",user=usr, field=field,search=search)
 
 
 @views.route("/Cancel", methods=['Get'])
@@ -137,7 +141,7 @@ def Clock_Out():
         out_id = db.session.query(models.ClockOut).filter(models.ClockOut.user_id == usr).order_by(models.ClockOut.Clock_Out.desc()).first()
         
 
-        if Fn != current_user.Emp_id:
+        if Emp_Name != current_user.Emp_id:
             flash('Incorrect Employee ID', category='error')
         elif usr in range(1,6):####add more admins   
             if out_id and in_id is not None:
@@ -212,9 +216,16 @@ def Delete():
 
 @login_required
 @views.route("/Report")
-def TimeReport():
-   #T.TimeReport()
-   return render_template("Report_P_Template.html",user=current_user)
+def time_report():
+        workbook_path = T.Timelog
+        try:
+            #Request = send_file(workbook_path, as_attachment=True)
+            return render_template("Report_P_template.html",user=current_user)
+
+        except FileNotFoundError:
+            abort(404)  # File not found
+        except IOError:
+            abort(500)  # Error reading the file
 
 @login_required
 @views.route("/Edit")

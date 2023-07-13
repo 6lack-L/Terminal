@@ -4,142 +4,75 @@
 
 
 
+<head>
+	<style>
+		.container {
+			display: flex;
+			justify-content: space-between;
+		}
 
+		.card {
+			width: 80%; /* Adjust the width as needed */
+			margin-bottom: 20px;
+			padding: 10px;
+			background-color: #f2f2f2;
+			border-radius: 3px;
+		}
 
-	<h2>Profile</h2>
-	<br/>
+		.card table {
+			width: 100%;
+			border-collapse: collapse;
+		}
 
+		.card table th,
+		.card table td {
+			padding: 8px;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
 	<div class="card">
-  <div class="card-header">
-    {{ current_user.name }}
-  </div>
-  <div class="card-body">
-   
+	<div class="card-header">
+	<h2>Profile</h2>	
+	</div>
+	<div class="card-body">
     <p class="card-text">
 
-<div class="container">
-	<div class="row">
-		<div class="col-8">
+	<div class="container">
+		<div class="row">
+			<div class="col-8">
 
     <strong>Name:</strong>
-	{{ current_user.name }}<br/>
+	{{ current_user.FirstName }} {{ current_user.LastName }}<br/>
 
-	<strong>Username:</strong>
-	{{ current_user.username }}<br/>
+	<strong>Role:</strong>
+	{{ current_user.roles }}<br/>
 
-	<strong>User Id:</strong>
-	{{ current_user.id }}<br/>
+	<strong>Employee Id:</strong>
+	{{ current_user.Emp_id }}<br/>
 
 	<strong>Email:</strong>
 	{{ current_user.email }}<br/>
 
-	<strong>Favorite Color:</strong>
-	{{ current_user.favorite_color }}<br/>
-
-	<strong>About Author:</strong>
-	{{ current_user.about_author }}<br/>
-
-	<strong>Profile Pic:</strong>
-	{{ current_user.profile_pic }}<br/>
-
-	<strong>Date Joined:</strong>
-	{{ current_user.date_added }}<br/>
-
-
-	
-
-    	
+	<strong>TimeLog:</strong>
+		<table>
+			<tr>
+				{% for col in field %}
+				<th>{{ col }}</th>
+				{% endfor %}
+			</tr>
+			{% for entry in search[::-1] %}
+			<tr>
+				{% for value in entry.split(',') %}
+					<td>{{ value }}</td>
+				{% endfor %}
+			</tr>
+			{% endfor %}
+		</table>
+	</div>
     </p>
-    <a href="{{ url_for('logout')}}" class="btn btn-secondary btn-sm">Logout</a>
 
-    <a href="{{ url_for('update', id=current_user.id)}}" class="btn btn-secondary btn-sm">Update Profile</a>
-
-    <a href="{{ url_for('delete', id=current_user.id)}}" class="btn btn-danger btn-sm">Delete</a>
-    <br/><br/>
-
-    
-	</div>
-	<div class="col-4">
-		{% if current_user.profile_pic %}
-
-		<img src="{{ url_for('static', filename='images/' + current_user.profile_pic)}}" width="200" align="right">
-		
-		{% else %}
-
-		<img src="{{ url_for('static', filename='images/default_profile_pic.png')}}" width="200" align="right">
-
-		{% endif %}
-	
-	</div>
-	</div>
-	</div>
-
-
-  </div>
-</div>
-	
-
-	
-<br/>
-
-<div class="card">
-  <div class="card-header">
-    Update Profile
-  </div>
-  <div class="card-body">
-
-  	<form action="/dashboard" method="POST" enctype="multipart/form-data">
-		{{ form.hidden_tag() }}
-
-		{{ form.name.label(class="form-label") }}
-
-		{{ form.name(class="form-control", value=name_to_update.name) }}
-		<br/>
-
-		{{ form.username.label(class="form-label") }}
-
-		{{ form.username(class="form-control", value=name_to_update.username) }}
-		<br/>
-
-		{{ form.email.label(class="form-label") }}
-
-		{{ form.email(class="form-control", value=name_to_update.email) }}
-		<br/>
-		
-		{{ form.favorite_color.label(class="form-label") }}
-
-		{{ form.favorite_color(class="form-control", value=name_to_update.favorite_color) }}
-		<br/>
-
-		{{ form.about_author.label(class="form-label") }}
-
-		<textarea name="about_author" class="form-control">{{ name_to_update.about_author }}</textarea>
-		<br/>
-
-		{{ form.profile_pic.label(class="form-label") }}
-
-		{{ form.profile_pic(class="form-control", value=name_to_update.profile_pic) }}
-		
-
-		<br/>
-		
-		{{ form.submit(class="btn btn-secondary btn-sm") }}
-			
-
-		
-
-
-	</form>
-
-
-
-</div>
-
-	
-	
-
-
-</div>
-
+</body>
 
 {% endblock %}

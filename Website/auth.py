@@ -5,6 +5,10 @@ from . import db   ##means from __init__.py import db
 from flask_login import login_user, login_required, logout_user, current_user
 import random
 import string
+import xlwings as xw
+from Website import Timesheet as T
+from Website import models 
+
 
 auth = Blueprint('auth', __name__)
 
@@ -85,5 +89,9 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash(f'Account Created! your Empoyee ID is: ({emp_id}) please write this code down you will need it to Clock in!')
+            
+            #add to workbook
+            data = [emp_id,Fn,ln]
+            T.write_to_last_row(data)
             return redirect(url_for('views.index'))
     return render_template("sign_up.html",user=current_user)

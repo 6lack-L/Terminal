@@ -14,22 +14,36 @@ import fileinput
 import pandas as pd
 import xlwings as xw
 
-
-xw.Book ('Timelog.xlsx')
 #variable for location of csv(change accordingly!!)
 Time_Card = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Terminal/Website/timelog.csv'
-
+Timelog = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Terminal/Website/Timelog.xlsx'
 #read CSV file into dataframe
 df = pd.read_csv(Time_Card)
 #creating Data frame table
 table = pd.DataFrame(df, columns = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out'])
 #opens workbook TimeCard.xlsx 
-wb = xw.books('Timelog.xlsx')
+wb = xw.Book(Timelog)
 #adds to and updates Timecard sheet displays as TimeCard(2)
 ws = wb.sheets['timelog']
 my_date_handler = lambda year, month, day, **kwargs: "%04i/%02i/%02i" % (year, month, day)
 #sets excel values and formats table
 ws.range('A1').options(index=False, dates=my_date_handler,column=['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']).value = table
+
+def write_to_last_row(data):
+    # Open the Excel workbook using 'with open'
+    workbook = wb
+    sheet = wb.sheets['Sheet1']
+
+    # Determine the last row of the table
+    last_row = sheet.range('A' + str(sheet.cells.last_cell.row)).end('up').row + 1
+
+    # Write data to the last row
+    for i, value in enumerate(data, start=1):
+        sheet.cells(last_row, i).value = value
+
+    # Save the workbook (closing is not needed with 'with open')
+    workbook.save()
+    workbook.close()
 
 
 #Using Add to add data in file first, We have to add clock in time 
@@ -69,35 +83,18 @@ def Add(EmpName='',EmpDes='',EmpVeh='',EmpRuns='',EmpArea=''):
         TimeCard_file.write(Emp_Runs + ', ')
         TimeCard_file.write(Emp_Area + ', ')
         TimeCard_file.write(Clock_in + ',')
-#        print("Your Current Date is:",Current)
-#        print("Your Clock in Time is :", Clock_in)
-#        print("Work Type: ", Emp_Des)
-#        print("Vehicle: ", Emp_Veh)
-#        print("Runs: ", Emp_Runs)
-#        print("Location: ", Emp_Area)
         TimeCard_file.write('\n')
         #Close the file
         TimeCard_file.close()
 
-    #Check if user wants to add another record to the file
-#    func = input("Enter Q to quit, Press M for main menu or Press E to Edit:")
-#    if func == "Q" or func =="q":
-#        quit()
-#    elif func == "M" or func =="m":
-#        return main()
-#    elif func == "E" or func == "e":
-#        return Edit()
-#    else:
-#        print("Incorrect input, Please Try Again \n")
-
-#First Ask for employee name so can add clock out time for same person.
 
 def Clock_out(EmpVeh_='',EmpName_=''):
     found = False
     val = 'x'
+
     #input the name what you want to search
     employee_name = EmpName_
-    employee = employee_name
+    employee = employee_name.upper()
     EmpVeh = EmpVeh_
     Emp_Veh = EmpVeh.upper()
     
@@ -118,8 +115,6 @@ def Clock_out(EmpVeh_='',EmpName_=''):
         Current  = now.strftime("%Y-%m-%d")
         Clock_out = now.strftime("%H:%M")
         search = val
-#        print(search.rstrip('\n') + ' ' + Clock_out + ', ' + Emp_Veh)
-#        print("You are Clocked out successfully")
         TimeCard_file.close()
        
         #open the file
@@ -128,7 +123,7 @@ def Clock_out(EmpVeh_='',EmpName_=''):
         output = []
         #for loop i you find search record
         for line in f:
-            if line.startswith(val):
+            if line.startswith(search):
                 output.append(line.replace(line, line.rstrip('\n') + ' ' +Emp_Veh+ ', ' + Clock_out) + '\n')
             else:
                 output.append(line)
@@ -150,27 +145,15 @@ def Clock_out(EmpVeh_='',EmpName_=''):
                     if total_minutes < 0:
                         total_minutes += 12 * 60
                     total_hours, minutes = divmod(total_minutes, 60)
-                    print(f"Total Working Hours is: {total_hours} Hours and {minutes} Minutes\n")
     except FileNotFoundError:
         print(f"Error: {Time_Card} file not found.")
     except Exception as e:
         print(f"An error occurred: {e}")
 
 
-    #added function to make decision if you want to work on this file or exit
-#    func = input("Enter Q to quit or Press M for main menu:")
-#    if func == "Q" or func =="q":
-#        quit()
-#    elif func == "M" or func =="m":
-#        return main()
-#    else:
-#        print("Incorrect input, Please Try Again \n")
-
-#This function will display all working time for all employee
-
 def TimeReport():
     #open time card
-    TimeCard_file = open(Time_Card,'r')
+    TimeCard_file = open(table,'r')
     TimeCard = TimeCard_file.readline()
     
     #read the rest of the file
@@ -193,14 +176,6 @@ def TimeReport():
     #close the file
     TimeCard_file.close()
 
-    #Added function to make decision if want to work or exit
-#    func = input("Enter Q to quit or Press M for main menu:")
-#    if func == "Q" or func =="q":
-#        quit()
-#    elif func == "M" or func =="m":
-#        return main()
-#    else:
-#        print("Incorrect input, Please Try Again \n")
 
 #fix this so it calls add function to append new data to file for clock in/clock out
 def Edit():
@@ -272,15 +247,6 @@ def Edit():
     #Close the file
     TimeCard_file.close()
     
-#Check if user wants to add another record to the file
-#    func = input("Enter Q to quit or Press M for main menu:")
-#    if func == "Q" or func =="q":
-#        quit()
-#    elif func == "M" or func =="m":
-#        return main()
-#    else:
-#        print("Incorrect input, Please Try Again \n")
-
 
 #This function will search employee and his working hours 
 def Search(EmpName_=''):
@@ -290,14 +256,11 @@ def Search(EmpName_=''):
     lst = []
     sum_h = 0
     sum_m = 0
+
     with open(Time_Card, 'r') as file:
         for line in file:
             if line.startswith(emp_id):
                 word = line.split(',')
-#                worktype = word[2]
-#                vehicle = word[3]
-#                runs = word[4]
-#                area = word[5]
                 start = datetime.strptime(word[6], ' %H:%M')
                 end = datetime.strptime(word[-1].strip(), '%H:%M') if len(word[-1]) >= 5 else datetime.strptime('00:00', '%H:%M')
                 hours = (end - start).seconds // 3600
@@ -308,22 +271,10 @@ def Search(EmpName_=''):
                 sum_h += hours
                 sum_m += minutes
                 lst.append(line)
-#    total_mins = sum_h * 60 + sum_m
-#    total_hrs, total_mins = divmod(total_mins, 60)
-#    lst.append(('Total Working Hours:', f'{total_hrs} Hours and {total_mins} Minutes'))
     return lst
-    #added function to make decision if you want to work on this file or exit
-#    func = input("Enter S to Keep Searching or Press M for main menu:")
-#    if func == "S" or func =="s":
-#        Search()
-#    elif func == "M" or func =="m":
-#        return main()
-#    else:
-#        print("Incorrect input, Please Try Again \n")
 
 
 #this function will remove unwanted data from report
-
 def Delete():
     found = False
     #input the name you want to search
@@ -362,16 +313,6 @@ def Delete():
     f.close()
     print("You successfully deleted " + search + "'s Record")
    
-
-#    func = input("Enter D to Delete more or Press M for main menu:")
-#    if func == "D" or func =="d":
-#        Delete()
-#    elif func == "M" or func =="m":
-#        return main()
-#    else:
-#        print("Incorrect input, Please Try Again \n")
-
-
 
 #Password function for manager access:
 def getPassword():

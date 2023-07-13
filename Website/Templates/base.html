@@ -18,11 +18,11 @@
     <title>{% block title %}Base{% endblock %}</title>
 
     <!-- Favicon code-->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon_package_v0.16/apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon_package_v0.16/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon_package_v0.16/favicon-16x16.png') }}">
+    <link rel="manifest" href="Terminal/Website/static/favicon_package_v0.16/site.webmanifest">
+    <link rel="mask-icon" href="Terminal/Website/static/favicon_package_v0.16/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
@@ -119,6 +119,20 @@
         visibility: visible;
         opacity: 1;
       }
+
+    /* Tablet styles */
+    @media only screen and (max-width: 768px) {
+      body {
+        font-size: 14px;
+      }
+    }
+
+    /* Phone styles */
+    @media only screen and (max-width: 480px) {
+      body {
+        font-size: 12px;
+      }
+    }
     </style>
   </head>
 <body>
@@ -127,10 +141,10 @@
       <nav>
         <ul>
           <li><a id="home" href="/">RMS Pope Inc</a></li>
-          <li>Profile
+          <li><a id="profile" href="/Profile">Profile</a>
             <ul class="sub-nav">
               <li><a id="View" href="/ViewHours">View hours</a></li>
-              <li><a id="edit" href="/">edit profile</a></li>
+              <li><a id="edit" href="/Profile">edit profile</a></li>
               <li><a id="Admin" href="/">Admin Console</a></li>
               <li><a id="settings" href="/">settings</a></li>
               <li><a id="Logout" href="/logout">Logout</a></li>
@@ -143,7 +157,7 @@
       <nav>
         <ul>
           <li><a id="home" href="/">RMS Pope Inc</a></li>
-          <li><a id="profile" href="/">Profile</a>
+          <li><a id="profile" href="/Profile">Profile</a>
             <ul class="sub-nav">
               <li><a id="View" href="/ViewHours">View hours</a></li>
               <li><a id="edit" href="/">edit profile</a></li>

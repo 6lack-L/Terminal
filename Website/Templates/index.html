@@ -1,44 +1,86 @@
 {% extends 'base.html' %}
-{% block title %}Home{%endblock%}
+
+{% block title %}Home{% endblock %}
+
 {% block content %}
-<br>
-<strong><h1 class="title">RMS POPE Terminal</strong>
-</h1>
-<hr>
-<p class="subtitle">
-  <h2>Welcome!</h2>
-  <br><strong>
-   Please select an option below in the RMS Time Card System
-   </strong>
-  <br>
-  <hr>
-  {% if current_user.id == 1 %}
-    <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
-    <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>
-    <br> 
-    <hr>         
-    <a type="button" class="btn btn-dark" href="/search">Search Records</a>
-    <a type="button" class="btn btn-dark" href="/Delete">Delete</a>
-    <a type="button" class="btn btn-dark" href="/Edit">Edit</a>
-    <a type="button" class="btn btn-dark" href="/Report">Report</a>
-  {% elif current_user.is_authenticated %}
-    <a type="button" class="btn btn-success" href="/Clock-IN" method="GET">Clock-IN</a>
-    <a type="button" class="btn btn-danger" href="/Clock-Out">Clock-Out</a>
-    <a type="button" class="btn btn-dark" href="/search">Search Records</a>
-  {% endif%}  
-  <br>
-  <hr>
-  {% if current_user.id == 1 %}
-    <strong>Other Applications</strong>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="title">RMS POPE Terminal</h1>
       <hr>
-      <button type="button" class="btn btn-dark" href="https://my214.geotab.com/">GeoTab</button>
-      <a type="button" class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
-      <a type="button" class="btn btn-dark" href="/">Rms Database</a>
-  {% elif current_user.is_authenticated %}
-      <a type="button" class="btn btn-dark" href="https://my214.geotab.com/">GeoTab</a>
-      <a type="button" class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
-  {% else%}
-      <a type="button" class="btn btn-dark" href="https://my214.geotab.com/">GeoTab</a>
-      <a type="button" class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
-  {% endif%}
+      <div class="subtitle">
+        <h2>Welcome!</h2>
+        <br>
+        <p>Please select an option below in the RMS Time Card System</p>
+        <hr>
+        {% if current_user.id == 1 %}
+          <a class="btn btn-success" href="/Clock-IN">Clock-IN</a>
+          <a class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>
+          <br>
+          <hr>
+          <a class="btn btn-dark" href="/search">Search Records</a>
+          <a class="btn btn-dark" href="/Delete">Delete</a>
+          <a class="btn btn-dark" href="/Edit">Edit</a>
+          <a class="btn btn-dark" href="/Report">Report</a>
+        {% elif current_user.is_authenticated %}
+          <a class="btn btn-success" href="/Clock-IN">Clock-IN</a>
+          <a class="btn btn-danger" href="/Clock-Out">Clock-Out</a>
+          <a class="btn btn-dark" href="/search">Search Records</a>
+        {% endif %}
+        <br>
+        <hr>
+        {% if current_user.id == 1 %}
+          <strong>Other Applications</strong>
+          <hr>
+          <a class="btn btn-dark" href="https://my214.geotab.com/rms_pope">GeoTab</a>
+          <a class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
+          <a class="btn btn-dark" href="/">RMS Database</a>
+          <a class="btn btn-dark" href="/">Sage Accounting</a>
+        {% elif current_user.is_authenticated %}
+          <a class="btn btn-dark" href="https://my214.geotab.com/rms_pope">GeoTab</a>
+          <a class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
+        {% else %}
+          <a class="btn btn-dark" href="https://my214.geotab.com/rms_pope">GeoTab</a>
+          <a class="btn btn-dark" href="https://app.asana.com/0/1202663779097115/board">Asana</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    top: 40px
+  }
+  .container {
+    max-width: 768px;
+    margin: 0 auto;
+  }
+  .title {
+    text-align: center;
+  }
+  .subtitle {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 50px;
+  }
+  .btn {
+    display: block;
+    margin: 0 auto 10px;
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+  }
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  .btn-danger {
+  }
 {% endblock %}
