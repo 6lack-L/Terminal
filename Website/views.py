@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash, session, send_file, abort
+from jinja2 import Environment
 from Website import models
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db   ##means from __init__.py import db
@@ -11,6 +12,7 @@ from wtforms import SearchField, StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import  SQLAlchemy
 import datetime
+import numpy as np
 
 views = Blueprint('views',__name__)
 
@@ -47,7 +49,6 @@ def Card2():
 @views.route("/Card3", methods=["GET", "POST"])
 def card3():
     return render_template("card3.html")
-
 
 
 @views.route("/Clock-IN", methods=["GET","POST"])
@@ -204,34 +205,142 @@ def find():
     if form.validate_on_submit():
         form_name = form.searched.data
         search_results = T.Search(form_name) 
-        return render_template("card3.html", user=usr, field=field, form=form, search=search_results)  
-    return render_template("Search_template.html", form=form, search=search_results, user=usr, field=field)
+        return render_template("card3.html", user=usr, field=field, form=form, search=search_results)
+    return render_template("Search_template.html", form=form, user=usr)
 
 
 @login_required
-@views.route("/Delete")
+@views.route("/Delete", methods=["GET", "POST"])
 def Delete():
-   #T.Delete()
-   return render_template("Delete_P_template.html",user=current_user)
+    form = models.DeleteForm()
+    usr = current_user.id
+
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    
+    found_records = []  # Initialize the variable with an empty list
+    remaining_records = []
+
+    if form.validate_on_submit():
+            Emp_ID = form.Emp_ID.data
+            Date = form.Date.data
+            session["Emp_ID"] = Emp_ID
+            session["Date"] = Date
+            found_records, remaining_records, deletion_successful, message = T.Delete(Emp_ID, Date, False)
+            return render_template("confirm_deletion.html", user=usr, field=field, form=form,
+                           found_records=found_records, 
+                           remaining_records=remaining_records, 
+                           deletion_successful=deletion_successful,
+                           message=message)
+    return render_template("Delete_P_template.html",user=usr, field=field, form=form)
+
+def resultToDict(result):
+    ds = []
+    for rows in result:
+        d = {}
+        for row in rows:
+            for col in row.__table__.columns:
+                d[col.name] = str(getattr(row, col.name))
+        ds.append(d)
+    return ds
+
+@views.route("/confirm_deletion", methods=["GET", "POST"])
+def confirm_deletion():
+    usr = current_user.id
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    form = models.DeleteForm()
+    remaining_records = []  # Initialize as an empty list
+    deletion_successful = False
+    confirmation_message = ''
+    if form.validate_on_submit():
+        emp_name = form.Emp_ID.data
+        date = form.Date.data
+        found_records, remaining_records, deletion_successful, confirmation_message = T.Delete(emp_name, date, True)
+
+        if deletion_successful:
+            flash(confirmation_message, category='confirmation')
+        else:
+            flash(confirmation_message, category='error')
+
+    return render_template("confirm_deletion.html", form=form, remaining_records=remaining_records, found_records=found_records,user=usr, field=field)
+#build databbase delete function
+
 
 @login_required
 @views.route("/Report")
 def time_report():
-        workbook_path = T.Timelog
+        workbook_path = T.Time_Card
+        df = pd.read_csv(workbook_path)
+
+        df_cleaned = df.replace([''], [np.nan])
+        df_filled = df_cleaned.fillna('Error')
+
         try:
-            #Request = send_file(workbook_path, as_attachment=True)
-            return render_template("Report_P_template.html",user=current_user)
+            return render_template("Report_P_template.html",user=current_user, df_filled=df_filled)
 
         except FileNotFoundError:
             abort(404)  # File not found
         except IOError:
             abort(500)  # Error reading the file
 
+
+
 @login_required
-@views.route("/Edit")
+@views.route("/Edit", methods=["GET", "POST"])
 def Edit():
-   #T.Edit()
-   return render_template("Edit_P_Template.html",user=current_user)
+    form = models.DeleteForm()
+    usr = current_user.id
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    remaining_records = []
+    found_records = []
+    if form.validate_on_submit():
+        emp_id = form.Emp_ID.data
+        date = form.Date.data
+        session["Emp_ID"] = emp_id
+        session["Date"] = date
+        remaining_records, found_records = T.Edit(emp_id,date)
+        session["remaining_records"] = remaining_records
+        session["found_records"] = found_records
+        return redirect(url_for('views.confirm_update'))
+    return render_template("Edit_P_Template.html", user=usr, field=field, form=form)
+
+@views.route("/confirm_update", methods=["GET","POST"])
+def confirm_update():
+    usr = current_user.id
+    field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
+    form = models.EditForm()
+
+#initialize variables
+    remaining_records = []
+    found_records = []
+    deletion_successful = False
+    confirmation_message = ''
+    found_records = session.get('found_records', [])
+    remaining_records = session.get('remaining_records', [])
+   #found_records = [item for sublist in found_records for item in sublist]
+    #remaining_records = [item for sublist in remaining_records for item in sublist]
+
+    if form.validate_on_submit():
+        emp_name = form.Employee.data.upper()
+        date = form.Date.data.upper()
+        des = form.Description.data.upper()
+        veh = form.Vehicle.data.upper()
+        runs = form.Runs.data.upper()
+        location = form.Location.data.upper()
+        clock_in = form.Clock_in.data.upper()
+        veh2 = form.Veh2.data.upper()
+        clock_out = form.Clock_out.data.upper()
+
+        remaining_records, found_records, deletion_successful, confirmation_message = T.update_records(emp_name,date,des,veh,runs,location,clock_in,veh2,clock_out,True)
+
+        if deletion_successful:
+            flash(confirmation_message, category='confirmation')
+        else:
+            flash(confirmation_message, category='error')
+
+        return render_template("confirm_update.html",form=form,
+                                remaining_records=remaining_records,found_records=found_records,user=usr, field=field)
+
+    return render_template("confirm_update.html",user=current_user, form=form, remaining_records=remaining_records,found_records=found_records,feild=field)
 
 
 # Create Custom Error Pages

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}
+Edit Confirmation
+{% endblock %}
+{% block content %}
+<head>
+    <style>
+        /* ... existing styles ... */
+
+        /* Add some margin to the left-section */
+        .left-section {
+            flex: 1; /* Take up 50% of the card's width */
+            padding: 20px;
+            margin-right: 20px;
+            background-color: #ffffff; /* Set background color of the table section */
+            overflow-y: auto; /* Add scroll to the table if content overflows */
+        }
+
+        /* Style the form section */
+        .right-section {
+            flex: 1; /* Take up 50% of the card's width */
+            background-color: #ffffff; /* Set background color of the form section */
+            padding: 20px;
+            display: flex;
+            flex-direction: column; /* Stack form fields vertically */
+            gap: 15px; /* Add vertical spacing between form fields */
+        }
+
+        /* ... existing styles ... */
+    </style>
+</head>
+<body>
+            <div class="right-section">
+                <form action="{{ url_for('views.confirm_update') }}" method="POST">
+                    {{ form.hidden_tag() }}
+                    <p>Enter new hours</p>
+                    <div class="control">
+                        {{ form.Employee(
+                            class="form-control",
+                            placeholder="Employee") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Date(
+                            class="form-control",
+                            placeholder="Date") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Description(
+                            class="form-control",
+                            placeholder="Description") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Vehicle(
+                            class="form-control",
+                            placeholder="Vehicle") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Runs(
+                            class="form-control",
+                            placeholder="Runs") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Location(
+                            class="form-control",
+                            placeholder="Location") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Clock_in(
+                            class="form-control",
+                            placeholder="Clock_in") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Veh2(
+                            class="form-control",
+                            placeholder="Veh2") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Clock_out(
+                            class="form-control",
+                            placeholder="Clock_Out") }}
+                    </div>
+                </br>
+                    <div class="control">
+                        {{ form.Submit(class="btn btn-primary", onclick="return confirm('Are you sure you want to Edit this entry')") }}
+                    </div>
+                </form>
+            </div>
+         </div>
+    </div>
+     <div class="container">
+        <div class="card">
+                    <h2>Found Records</h2>
+                    <table>
+                        {% if found_records is not none %}
+                        <tr>
+                            {% for col in field %}
+                            <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                            {% for entry in found_records %}
+                            <tr>
+                                {% for value in entry.split(',') %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        {% else %}    
+                        <p>No records found.</p>
+                        {% endif %}
+                    </table>
+                    <br/>
+                    <table>
+                        <h2>Remaining Records:</h2>
+                        <tr>
+                            {% for col in field %}
+                            <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                        {% if remaining_records is not none %}
+                            {% for entry in remaining_records %}
+                            <tr>
+                                {% for value in entry.split(',') %}
+                                    <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <p>No records found.</p>    
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>   
+{% endblock %}
+    

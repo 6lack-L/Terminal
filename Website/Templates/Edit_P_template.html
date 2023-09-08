@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+Edit
+{% endblock %}
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <img src="">
+      <br>
+      <h1 class="title">
+        Edit Records
+      </h1>
+      <hr>
+      <p class="subtitle">
+        <strong>Search for the Records you would like to Edit</strong>
+      </p>
+      <form action="{{ url_for('views.Edit') }}" method="POST">
+        {{ form.hidden_tag() }}
+        <div class="control">
+            {{ form.Emp_ID(
+                class="form-control",
+                placeholder="Employee ID") }}
+        </div>
+    </br>
+        <div class="control">
+            {{ form.Date(
+                class="form-control",
+                placeholder="yyyy/mm/dd") }}
+        </div>
+        <br/>
+        {{ form.Submit(class="btn btn-primary") }}
+      </form>
+    </div>
+  </section>
+{% endblock %}

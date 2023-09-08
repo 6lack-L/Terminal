@@ -13,6 +13,7 @@ import time
 import fileinput
 import pandas as pd
 import xlwings as xw
+from collections import namedtuple
 
 #variable for location of csv(change accordingly!!)
 Time_Card = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Terminal/Website/timelog.csv'
@@ -178,80 +179,64 @@ def TimeReport():
 
 
 #fix this so it calls add function to append new data to file for clock in/clock out
-def Edit():
-    found =  False
+def Edit(empname='', date=''):
+    found_records = []
+    remaining_records = []
+    # input the name you want to search
+    emp_name = str(empname).upper()
+    date = str(date).upper()
 
-    #input the name you want to search
-    EmpName = input("Please Enter Employee Name:")
-    employee = EmpName.upper()
+    primary_search = emp_name + ', ' + date
+    secondary_search = emp_name
+    with open(Time_Card, 'r') as file:
+            for line in file:
+                if line.startswith(primary_search):
+                    found_records.append(line)
+                elif line.startswith(secondary_search):
+                    remaining_records.append(line)
+    return remaining_records, found_records
 
-    #open the time card file and search name
-    TimeCard_file = open(Time_Card,'r')
-    TimeCard = TimeCard_file.readline()
+def update_records(empname='', Date='', emp_des='', emp_veh='', emp_runs='', emp_area='', clock_in='', veh2='', clock_out='',confirmed=False):
+    emp_name = str(empname).upper()
+    date = str(Date).upper()
 
-    #read the file if you have entered any name
-    while TimeCard != '':
-        found = TimeCard.startswith(employee)
-        if found:
-            print(TimeCard)
+    primary_search = emp_name + ', ' + date
+    secondary_search = emp_name
 
-        TimeCard = TimeCard_file.readline()
-    TimeCard_file.close()
-    
+    all_records = []
+    found_records = []
+    remaining_records = []
 
-    Date = input("Enter the Date you want to edit[yyyy/mm/dd]:")
-    search = (employee + ", " + Date)
+    with open(Time_Card, 'r') as timecard_file:
+        for line in timecard_file:
+            if not line.startswith(primary_search):
+                all_records.append(line)
+            if line.startswith(primary_search):
+                found_records.append(line)
+            elif line.startswith(secondary_search):
+                remaining_records.append(line)
 
-    #Open the file
-    fn = Time_Card
-    f = open(fn)
-    output = []
-    #for loop i you find search record
-    for line in f:
-        if not line.startswith(search):
-            output.append(line)
-    f.close()
-    f = open(fn, 'w')
-    f.writelines(output)
-    f.close()
+    new_entry = f"{emp_name}, {date}, {emp_des}, {emp_veh}, {emp_runs}, {emp_area}, {clock_in}, {veh2}, {clock_out}\n"
+    all_records.append(new_entry)
 
+    if confirmed and found_records:
+        with open(Time_Card, 'w') as file:
+            for line in all_records:
+                file.write(line)
 
-    #open the TimeCard.txt file in append mode
-    TimeCard_file = open(Time_Card, 'a')
-    print("enter Clock in and Clock out for",employee)
+            message = f"Record for {emp_name} on {date} has been updated successfully."
+            return remaining_records, found_records, True,message
+    else:
+        confirmed = False
+        message = f"No records found for {emp_name} on {date}."
+        found_records = found_records.append(message)
+        return remaining_records, found_records, False, message  
 
-    Clock_in = input("Enter Clock In time:")
-    #Clock_out = input("Enter Clock Out time:")
-    EmpDes = input ('Enter Work Type:')
-    EmpVeh = input ('Enter Vehicle:')
-    EmpRuns = input ('Enter Runs:')
-    EmpArea = input ('Enter Area:')
-    #EmpVeh2 = input ('Enter Vehicle-2 if you Switched:')
-    Emp_Des = EmpDes.upper()
-    Emp_Veh = EmpVeh.upper()
-    #Emp_Veh2 = EmpVeh2.upper()
-    Emp_Runs = EmpRuns.upper()
-    Emp_Area = EmpArea.upper()
-    #writing to file
-    TimeCard_file.write(employee + ", ")
-    TimeCard_file.write(Date + ", ")
-    TimeCard_file.write(Emp_Des + ', ')
-    TimeCard_file.write(Emp_Veh + ", ")
-    TimeCard_file.write(Emp_Runs + ", ")
-    TimeCard_file.write(Emp_Area + ", ")
-    TimeCard_file.write(str(Clock_in) + ", ")
-    #TimeCard_file.write(Emp_Veh2 + ", ")
-    #TimeCard_file.write(str(Clock_out) + ", ")
-    TimeCard_file.write('\n')
-
-    #Close the file
-    TimeCard_file.close()
-    
 
 #This function will search employee and his working hours 
-def Search(EmpName_=''):
+def Search(EmpName_='',date=''):
     emp_id = str(EmpName_).upper()
-    EmpName_=emp_id
+    date = str(date).upper()
 
     lst = []
     sum_h = 0
@@ -275,44 +260,39 @@ def Search(EmpName_=''):
 
 
 #this function will remove unwanted data from report
-def Delete():
-    found = False
-    #input the name you want to search
-    EmpName = input("Please Enter Employee Name:")
-    employee = EmpName.upper()
+def Delete(EmpName_='', Date_='',confirmed=False):
+    emp_name = str(EmpName_).upper()
+    date = str(Date_).upper()
 
-    #open the time card file and search name
-    TimeCard_file = open(Time_Card,'r')
-    TimeCard = TimeCard_file.readline()
+    primary_search = emp_name + ', ' + date
+    secondary_search = emp_name
 
-    #read the file if you have entered any name
-    while TimeCard != '':
-        found = TimeCard.startswith(employee)
-        if found:
-            print(TimeCard)
+    found_records = []
+    remaining_records = []
+    all_records = []
 
-        TimeCard = TimeCard_file.readline()
-    TimeCard_file.close()
-    TimeCard = filter(lambda x: not x.isspace(), TimeCard)
-    #Find the blank space and delete it
-    Date = input("Enter the date you want to delete[yyyy/mm/dd]:")
-    search = (employee + ', ' + Date)
+    with open(Time_Card, 'r') as file:
+        for line in file:
+            if not line.startswith(primary_search):
+                all_records.append(line)
+            if line.startswith(primary_search):
+                found_records.append(line)
+            elif line.startswith(secondary_search):
+                remaining_records.append(line)
 
-    #open the file
-    fn = Time_Card
-    f = open(fn)
-    output = []
-    #for loop i you find search record
-    for line in f:
-        if not line.startswith(search):
-            output.append(line)
-    f.close()
-    f = open(fn, 'w')
-    f.writelines(output)
-    f.write("".join(TimeCard))
-    f.close()
-    print("You successfully deleted " + search + "'s Record")
-   
+    if confirmed and found_records:
+        with open(Time_Card, 'w') as file:
+            for line in all_records:
+                file.write(line)
+
+            message = f"Record for {emp_name} on {date} deleted successfully."
+            return remaining_records, found_records, True,message
+    else:
+        confirmed = False
+        message = f"No records found for {emp_name} on {date}."
+        found_records = found_records.append(message)
+        return found_records, remaining_records, False, message
+    
 
 #Password function for manager access:
 def getPassword():
@@ -351,7 +331,7 @@ def main():
                 password = getPassword()
                 if validPassword(password) == True:
                     print(password + " is valid")
-                    Delete()
+                    Delete('ll50','2023/06/22')
                 elif validPassword(password) == False:
                     print(password + " is invalid")
                     print('\n')
@@ -367,7 +347,7 @@ def main():
                 password = getPassword()
                 if validPassword(password) == True:
                     print(password + " is valid")
-                    Edit()
+                    Edit('ll50','2023/05/10')
                 elif validPassword(password) == False:
                     print(password + " is invalid")
                     print('\n')

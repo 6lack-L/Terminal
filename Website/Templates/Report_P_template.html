@@ -1,35 +1,35 @@
 {% extends 'base.html' %}
-{% block title %}Report{%endblock%}
+
+{% block title %}
+Time Report
+{% endblock %}
+
 {% block content %}
-<head>
-  <div>
-  </div>
-  <hr>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-    }
-    
-    iframe {
-      width: 100%;
-      height: 100%;
-      max-width: 2800px; /* Adjust as needed */
-      max-height: 600px; /* Adjust as needed */
-    }
-  </style>
-</head>
-<body>
-  <strong><h1 class="title">Hours</h1></strong>
-  <hr>
-  <div class="container">
-    <iframe width="700" height="546" frameborder="0" scrolling="no" src="https://onedrive.live.com/embed?resid=992098DFA3F04F76%21785&authkey=%21ACY0blHKmsJj2dA&em=2&wdHideHeaders=True&wdDownloadButton=True&wdInConfigurator=True&wdInConfigurator=True"></iframe>
-</body> 
+  <section class="section">
+    <div class="container">
+      <h1 class="title">Time Report</h1>
+      <div class="card">
+        <div class="card-content">
+          <table class="table is-bordered is-fullwidth">
+            <thead>
+              <tr>
+                {% for column in df_filled.columns %}
+                <th>{{ column }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% for index, row in df_filled.iterrows() %}
+              <tr>
+                {% for column in df_filled.columns %}
+                <td>{{ row[column] }}</td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

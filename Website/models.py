@@ -19,6 +19,20 @@ class UserForm(FlaskForm):
     Location = StringField("EmpArea", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
+class EditForm(FlaskForm):
+    Employee = StringField("EmpName", validators=[DataRequired()])
+    Date = StringField("Date YYYY/mm/dd", validators=[DataRequired()])
+    Description = StringField("EmpDes", validators=[DataRequired()])
+    Vehicle = StringField("EmpVeh", validators=[DataRequired()])
+    Runs = StringField("EmpRuns", validators=[DataRequired()])
+    Location = StringField("EmpArea", validators=[DataRequired()])
+    Clock_in = StringField("Clock In Time", validators=[DataRequired()])
+    Veh2 = StringField("EmpVeh2", validators=[DataRequired()])
+    Clock_out = StringField("Clock out Time", validators=[DataRequired()])
+
+    Submit = SubmitField("Submit")
+
+
 class ClockoutForm(FlaskForm):
     Employee = StringField("EmpName", validators=[DataRequired()])
     Vehicle = StringField("EmpVeh", validators=[DataRequired()])
@@ -27,7 +41,13 @@ class ClockoutForm(FlaskForm):
 
 class SearchForm(FlaskForm):
 	searched = StringField("Searched", validators=[DataRequired()])
-	submit = SubmitField("Submit")
+	Submit = SubmitField("Submit")
+        
+class DeleteForm(FlaskForm):
+    Emp_ID = StringField("Employee ID", validators=[DataRequired()])
+    Date = StringField("Date", validators=[DataRequired()])
+    Submit = SubmitField("Submit")
+
         
 
 ##########################################################################################

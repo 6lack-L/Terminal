@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}Delete{%endblock%}
+{% block content %}
+<head>
+    <style>
+        /* Container for the entire content */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        /* Header section */
+        .header {
+            text-align: center;
+            padding: 20px;
+        }
+    
+        /* Main content section */
+        .content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+    
+        /* Left section for the form */
+        .left-section {
+            flex: 1;
+            padding: 1px; /* Reduce padding to create more space */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Move form elements to the left */
+        }
+    
+        /* Right section for the table */
+        .right-section {
+            flex: 2; /* Adjust the width of the table section */
+            padding: 20px;
+        }
+    
+        /* Form styling */
+        .form-control {
+            flex: 1;
+            padding: 10px; /* Reduce padding for form elements */
+            margin-bottom: 10px; /* Add margin between form elements */
+        }
+    
+        /* Table styling */
+        .card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+    
+        .card table th,
+        .card table td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    
+</head>
+<body>
+    <strong><h1 class="title">Delete</h1></strong>
+    <hr>
+    <h2>View past hours below.</h2>
+    <div class="container">
+        <div class="left-section">
+
+            <p class="subtitle">
+                <div class="columns">
+        
+                    <div class="column is-one-thirds">
+                        <form action="{{ url_for('views.confirm_deletion') }}" method="POST">
+                            {{ form.hidden_tag() }}
+                            <div class="field has-addons">
+                                <p>
+                                    Search Date to Delete Hours
+                                </p>
+                                <div class="control">
+                                        {{ form.Emp_ID(
+                                                class="form-control",
+                                                placeholder="Date") }}
+                                </div>
+                                </br>
+                                <div class="control">
+                                        {{ form.Date(
+                                                class="form-control",
+                                                placeholder="Date") }}
+                                </div>
+                                </br>
+                                <div class="control">
+                                        {{ form.Submit(class="btn
+                                        btn-primary", onclick="return confirm('Are you sure you want to Delete')") }}
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </p>
+        </div>
+
+        <div class="right-section">
+            <div class="card">
+                <h2>Found Records</h2>
+                <table>
+                    {% if found_records is not none %}
+                    <tr>
+                        {% for col in field %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                        {% for entry in found_records %}
+                        <tr>
+                            {% for value in entry.split(',') %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}    
+                    <p>No records found.</p>
+                    {% endif %}
+                </table>
+                <br/>
+                <table>
+                    <h2>Remaining Records:</h2>
+                    <tr>
+                        {% for col in field %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% if remaining_records is not none %}
+                        {% for entry in remaining_records %}
+                        <tr>
+                            {% for value in entry.split(',') %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                    <p>No records found.</p>    
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</body>   
+{% endblock %}
