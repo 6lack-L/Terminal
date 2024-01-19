@@ -136,7 +136,7 @@
     </style>
   </head>
 <body>
-  {% if current_user.id == 1 %}
+  {% if current_user.roles == 'Admin' %}
     <div class="container">
       <nav>
         <ul>
@@ -144,8 +144,7 @@
           <li><a id="profile" href="/Profile">Profile</a>
             <ul class="sub-nav">
               <li><a id="View" href="/ViewHours">View hours</a></li>
-              <li><a id="edit" href="/Profile">edit profile</a></li>
-              <li><a id="Admin" href="/">Admin Console</a></li>
+              <li><a id="Admin" href="/Admin">Admin Console</a></li>
               <li><a id="settings" href="/">settings</a></li>
               <li><a id="Logout" href="/logout">Logout</a></li>
             </ul>
@@ -160,7 +159,6 @@
           <li><a id="profile" href="/Profile">Profile</a>
             <ul class="sub-nav">
               <li><a id="View" href="/ViewHours">View hours</a></li>
-              <li><a id="edit" href="/">edit profile</a></li>
               <li><a id="contact" href="/">Contact us</a></li>
               <li><a id="settings" href="/">settings</a></li>
               <li><a id="Logout" href="/logout">Logout</a></li>
@@ -181,8 +179,6 @@
     <div class="header"></div>
   </div>
   {% endif%} 
-
-
 
     {% with messages = get_flashed_messages(with_categories=true) %} 
     {% if messages %} 
@@ -224,21 +220,5 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"
     ></script>
-
-
-{% block javascript %}
-    <script type="text/javascript">
-      function      {
-  fetch(" ", {
-    method: "POST",
-    body: JSON.stringify({ noteId: noteId }),
-  }).then((_res) => {
-    window.location.href = "/";
-  });
-  }
-  </script>
-{% endblock %}
-  
-
   </body>
 </html>

@@ -5,11 +5,12 @@ from flask_login import LoginManager
 
 db = SQLAlchemy()
 DB_Name = "database.db"
+database = f'sqlite:///{DB_Name}'
 
-def create_app():
+def create_app(database_uri=database):
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'RMSPOPE'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_Name}'
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     db.init_app(app)
 
     from .views import views

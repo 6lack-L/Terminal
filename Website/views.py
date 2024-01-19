@@ -1,35 +1,39 @@
-from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash, session, send_file, abort
-from jinja2 import Environment
+from flask import Blueprint, render_template, redirect, url_for, request, jsonify, flash, session, abort
 from Website import models
-from werkzeug.security import generate_password_hash, check_password_hash
 from . import db   ##means from __init__.py import db
-from flask_login import login_user, login_required, logout_user, current_user
+from flask_login import login_required, current_user
 import pandas as pd
-import xlwings as xw
 from Website import Timesheet as T
-from flask_wtf import FlaskForm
-from wtforms import SearchField, StringField, SubmitField
-from wtforms.validators import DataRequired
-from flask_sqlalchemy import  SQLAlchemy
 import datetime
 import numpy as np
-
 views = Blueprint('views',__name__)
-
 
 
 @views.route("/", methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
 
+@views.route("/Admin", methods=["GET","POST"])
+def Admin():
+    return render_template("Admin.html")
+
 @views.route("/Profile", methods=['GET', 'POST'])
 def profile():
-    usr = current_user.id
     field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
-    Hours = current_user.Emp_id
-    Emp_id = str(Hours)
-    search = T.Search(EmpName_=Emp_id)
-    return render_template("profile.html",user=usr, field=field,search=search)
+    Emp_id = session.get('Emp_ID')
+    if Emp_id is None:
+        user = current_user
+        Emp_id = str(user.Emp_id)
+        search, total_hours = T.Search(EmpName_=Emp_id)
+    else:
+        user = models.User.query.filter_by(Emp_id=Emp_id).first()
+        search, total_hours = T.Search(EmpName_=Emp_id)
+    session.clear()
+    session['view'] = Emp_id
+    df = pd.DataFrame(search, columns=field)
+    df_cleaned = df.replace([''], [np.nan])
+    df_filled = df_cleaned.fillna('Error')
+    return render_template("profile.html", user=user, field=field, df_filled=df_filled, total_hours=total_hours)
 
 
 @views.route("/Cancel", methods=['Get'])
@@ -133,7 +137,7 @@ def Clock_Out():
         FormVeh = form.Vehicle.data
         Fn= str(FormName)
         Fv= str(FormVeh)
-        out = T.Clock_out(Fv,Fn)
+        message1 = T.Clock_out(Fv,Fn)
 
         Emp_Name = FormName.upper()
         Emp_Veh = FormVeh.upper()
@@ -160,7 +164,8 @@ def Clock_Out():
                 out_id.Clock_Out = now
                 out_id.Vehicle_2 = Fv
             db.session.commit()
-            flash('Congratulations you are Clocked OUT!')
+            if message1 is not None:
+                flash(message1, 'message')
             return render_template("card2.html",user=usr, Employee=Emp_Name, Time_OUT=Time_OUT,Vehicle=Emp_Veh)
         else:
             if out_id and in_id is not None:
@@ -177,23 +182,33 @@ def Clock_Out():
                 out_id.Clock_Out = now
                 out_id.Vehicle_2 = Fv
             db.session.commit()
-            flash('Congratulations you are Clocked OUT!')
+            flash(message1, 'message')
             return render_template("card2.html",user=usr, Employee=Emp_Name, Time_OUT=Time_OUT,Vehicle=Emp_Veh)
         form.Employee.data = ''
         form.Vehicle.data = ''
-        return render_template("Clock_Out_form.html",out=out,form=form,user=usr)
-    return render_template("Clock_Out_form.html",form=form,user=current_user.id)
+        return render_template("Clock_Out_form.html",form=form,user=usr)
+    return render_template("Clock_Out_form.html",form=form,user=usr)
 
 
 @login_required
 @views.route("/ViewHours", methods=["GET", "POST"])
 def ViewHours():
-    usr = current_user.id
     field = ['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']
-    Hours = current_user.Emp_id
-    Emp_id = str(Hours)
-    search = T.Search(EmpName_=Emp_id)
-    return render_template("ViewHours.html",user=usr, field=field,search=search)
+    
+    Emp_id = session.get('view')
+    print(Emp_id)
+    if Emp_id is None:
+        user = current_user
+        Emp_id = str(user.Emp_id)
+        search, total_hours = T.Search(EmpName_=Emp_id)
+    else:
+        user = models.User.query.filter_by(Emp_id=Emp_id).first()
+        search, total_hours = T.Search(EmpName_=Emp_id)
+    session.clear()
+    df = pd.DataFrame(search, columns=field)
+    df_cleaned = df.replace([''], [np.nan])
+    df_filled = df_cleaned.fillna('Error')
+    return render_template("ViewHours.html",user=user, field=field,df_filled=df_filled,total_hours=total_hours)
 
 @views.route("/search", methods=["GET", "POST"])
 @login_required
@@ -204,8 +219,11 @@ def find():
     search_results = []  # Initialize the variable with an empty list
     if form.validate_on_submit():
         form_name = form.searched.data
-        search_results = T.Search(form_name) 
-        return render_template("card3.html", user=usr, field=field, form=form, search=search_results)
+        search,total_hours = T.Search(form_name)
+        df = pd.DataFrame(search, columns=field)
+        df_cleaned = df.replace([''], [np.nan])
+        df_filled = df_cleaned.fillna('Error')
+        return render_template("card3.html", user=usr, field=field, form=form, df_filled=df_filled,total_hours=total_hours, form_name=form_name)
     return render_template("Search_template.html", form=form, user=usr)
 
 
@@ -262,26 +280,29 @@ def confirm_deletion():
             flash(confirmation_message, category='error')
 
     return render_template("confirm_deletion.html", form=form, remaining_records=remaining_records, found_records=found_records,user=usr, field=field)
-#build databbase delete function
-
+#build database delete function
 
 @login_required
 @views.route("/Report")
 def time_report():
         workbook_path = T.Time_Card
         df = pd.read_csv(workbook_path)
-
+        
+        now = datetime.datetime.now(T.timezone_obj)
+        Current_day  = now.strftime(" %Y/%m/%d")
+        
         df_cleaned = df.replace([''], [np.nan])
         df_filled = df_cleaned.fillna('Error')
-
+        df_errors = df_filled[df_filled.eq('Error').any(axis=1)]
+        
+        mask = df_errors[' Date'] == Current_day
+        df_errors.loc[mask, ' Clock_Out'] = '00:00 Clocked -IN'       
         try:
-            return render_template("Report_P_template.html",user=current_user, df_filled=df_filled)
-
+            return render_template("Report_P_template.html",user=current_user, df_filled=df_filled, df_errors=df_errors)
         except FileNotFoundError:
             abort(404)  # File not found
         except IOError:
             abort(500)  # Error reading the file
-
 
 
 @login_required
@@ -316,8 +337,6 @@ def confirm_update():
     confirmation_message = ''
     found_records = session.get('found_records', [])
     remaining_records = session.get('remaining_records', [])
-   #found_records = [item for sublist in found_records for item in sublist]
-    #remaining_records = [item for sublist in remaining_records for item in sublist]
 
     if form.validate_on_submit():
         emp_name = form.Employee.data.upper()
@@ -336,12 +355,23 @@ def confirm_update():
             flash(confirmation_message, category='confirmation')
         else:
             flash(confirmation_message, category='error')
+        return redirect(url_for('views.time_report'))
 
-        return render_template("confirm_update.html",form=form,
-                                remaining_records=remaining_records,found_records=found_records,user=usr, field=field)
+    return render_template("confirm_update.html", form=form, remaining_records=remaining_records,found_records=found_records,field=field)
 
-    return render_template("confirm_update.html",user=current_user, form=form, remaining_records=remaining_records,found_records=found_records,feild=field)
+@views.route("/Directory", methods=["GET","POST"])
+def employee_directory():
+    form = models.SearchForm()
+    if form.validate_on_submit():
+        emp_id = form.searched.data
+        ei = str(emp_id.upper())
+        session["Emp_ID"] = ei
+        return redirect(url_for('views.profile'))
+    return render_template('Driver_Dir.html', form=form)
 
+@views.route("/Maintenance_Schedule", methods=["GET","POST"])
+def maintenance_schedule():
+    return render_template("MaintenceSchedule.html")
 
 # Create Custom Error Pages
 # Invalid URL

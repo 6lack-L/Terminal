@@ -70,8 +70,8 @@ def sign_up():
         Fp = str(password1)
 
         user = User.query.filter_by(email=email).first()
-        if user:
-             flash('Email already exists.', category='error')
+        if user == email:
+             flash('Email already exists. please login or contact support', category='error')
         elif len(Fe) < 4:
             flash('Email must be greater then 4 characters.', category='error')
         elif len(Fn) < 2:

@@ -27,8 +27,8 @@ class EditForm(FlaskForm):
     Runs = StringField("EmpRuns", validators=[DataRequired()])
     Location = StringField("EmpArea", validators=[DataRequired()])
     Clock_in = StringField("Clock In Time", validators=[DataRequired()])
-    Veh2 = StringField("EmpVeh2", validators=[DataRequired()])
-    Clock_out = StringField("Clock out Time", validators=[DataRequired()])
+    Veh2 = StringField("EmpVeh2")
+    Clock_out = StringField("Clock out Time")
 
     Submit = SubmitField("Submit")
 

@@ -1,20 +1,9 @@
-#Timesheet 
-# basic application written in Python
+#Timesheet Application
 #BY: lodo loro
-#Working Hours for a Week
-#Run the program. Click an option A = Add :: S = Search :: D = Delete :: E = Edit :: R = Report :: Q = Quit
-#To add time Type A, press enter, write In for Clock-in, and Out for Clock Out
-#Search based on names, to see Total Hours worked
-#Delete based on Date, only manager can delete records
-#Edit data by selecting an Employee and a Date, Only manager can edit the record.
-#Report of employee, only manager can see it
 from datetime import datetime
-import time
-import fileinput
 import pandas as pd
 import xlwings as xw
-from collections import namedtuple
-
+import pytz 
 #variable for location of csv(change accordingly!!)
 Time_Card = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Terminal/Website/timelog.csv'
 Timelog = '/Users/lodoloro/programs/RMSPOPEProjects/Rms_Terminal_APP/Terminal/Website/Timelog.xlsx'
@@ -28,24 +17,30 @@ wb = xw.Book(Timelog)
 ws = wb.sheets['timelog']
 my_date_handler = lambda year, month, day, **kwargs: "%04i/%02i/%02i" % (year, month, day)
 #sets excel values and formats table
-ws.range('A1').options(index=False, dates=my_date_handler,column=['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle-2', 'Clock-Out']).value = table
-
+ws.range('A1').options(index=False, dates=my_date_handler,column=['Employee', 'Date', 'Description', 'Vehicle', 'Runs', 'Location', 'Clock-IN', 'Vehicle2', 'Clock-Out']).value = table
+#Timezone setting
+desired_timezone = 'Canada/Newfoundland'
+timezone_obj = pytz.timezone(desired_timezone)
 def write_to_last_row(data):
-    # Open the Excel workbook using 'with open'
-    workbook = wb
-    sheet = wb.sheets['Sheet1']
+    try:
+        # Open the Excel workbook using 'with open'
+        workbook = wb
+        sheet = ws
 
-    # Determine the last row of the table
-    last_row = sheet.range('A' + str(sheet.cells.last_cell.row)).end('up').row + 1
+        # Determine the last row of the table
+        last_row = sheet.range('A' + str(sheet.cells.last_cell.row)).end('up').row + 1
 
-    # Write data to the last row
-    for i, value in enumerate(data, start=1):
-        sheet.cells(last_row, i).value = value
+        # Write data to the last row
+        for i, value in enumerate(data, start=1):
+            sheet.cells(last_row, i).value = value
 
-    # Save the workbook (closing is not needed with 'with open')
-    workbook.save()
-    workbook.close()
-
+        # Save the workbook (closing is not needed with 'with open')
+        workbook.save()
+        workbook.close()
+    except xw.exceptions.AppscriptError as e:
+                # Handle the error here, e.g., log it or provide an error message to the user
+        print(f"Error: {e}")
+ 
 
 #Using Add to add data in file first, We have to add clock in time 
 def Add(EmpName='',EmpDes='',EmpVeh='',EmpRuns='',EmpArea=''):
@@ -71,7 +66,7 @@ def Add(EmpName='',EmpDes='',EmpVeh='',EmpRuns='',EmpArea=''):
         Emp_Veh = EmpVeh_.upper()
         Emp_Runs = EmpRuns_.upper()
         Emp_Area = EmpArea_.upper()
-        now = datetime.now()
+        now = datetime.now(timezone_obj)
         print(TimeCard_file)
         Current  = now.strftime("%Y/%m/%d")
         Clock_in = now.strftime("%H:%M")
@@ -89,93 +84,47 @@ def Add(EmpName='',EmpDes='',EmpVeh='',EmpRuns='',EmpArea=''):
         TimeCard_file.close()
 
 
-def Clock_out(EmpVeh_='',EmpName_=''):
-    found = False
-    val = 'x'
+def Clock_out(EmpVeh_='', EmpName_=''):
+    #global variable passed as an argument
+    global Time_Card
+    global timezone_obj
 
-    #input the name what you want to search
-    employee_name = EmpName_
-    employee = employee_name.upper()
-    EmpVeh = EmpVeh_
-    Emp_Veh = EmpVeh.upper()
+    # Load the time card file
+    df = pd.read_csv(Time_Card)
+
+    # Input the name to search
+    employee = EmpName_.upper()
+    vehicle = EmpVeh_.upper()
+
+    # Search for the employee in the DataFrame
+    result = df[df['Employee'].str.contains(employee, case=False)]
     
-    #open the time card file and search name
-    TimeCard_file = open(Time_Card, 'r')
-    TimeCard = TimeCard_file.readline()
-    #read the file if you have entered any name
-    while TimeCard != '':
-        found = TimeCard.startswith(employee)
-        if found:
-            val = TimeCard
-        TimeCard = TimeCard_file.readline()
-    TimeCard_file.close()
+    # Check if any matching rows are found
+    if not result.empty:
+        # Get the index of the last matching entry
+        index = result.index[-1]
+        day_check = df.loc[index,' Date']#returns matching clockin date
 
-    if val != '':
-       #Add clockout time in file with current time
-        now = datetime.now()
-        Current  = now.strftime("%Y-%m-%d")
-        Clock_out = now.strftime("%H:%M")
-        search = val
-        TimeCard_file.close()
-       
-        #open the file
-        fn = Time_Card
-        f = open(fn)
-        output = []
-        #for loop i you find search record
-        for line in f:
-            if line.startswith(search):
-                output.append(line.replace(line, line.rstrip('\n') + ' ' +Emp_Veh+ ', ' + Clock_out) + '\n')
-            else:
-                output.append(line)
-        f.close()
-        f = open(fn, 'w')
-        f.writelines(output)
-        f.close()
+        # Add clock-out time in the file with the current time
+        now = datetime.now(timezone_obj)
+        Clock_out_time = now.strftime("%H:%M")
+        Current_day  = now.strftime(" %Y/%m/%d")
 
-    try:
-        with open(Time_Card, 'r') as TimeCard_file:
-            for TimeCard in TimeCard_file:
-                if TimeCard.startswith(employee):
-                    words = TimeCard.strip().split(',')
-                    start = words[-1] if words[-1] else words[6]
-                    end = Clock_out if Clock_out else words[-1]
-                    start_hour, start_minute = map(int, start.split(':'))
-                    end_hour, end_minute = map(int, end.split(':'))
-                    total_minutes = (end_hour - start_hour) * 60 + (end_minute - start_minute)
-                    if total_minutes < 0:
-                        total_minutes += 12 * 60
-                    total_hours, minutes = divmod(total_minutes, 60)
-    except FileNotFoundError:
-        print(f"Error: {Time_Card} file not found.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
-
-def TimeReport():
-    #open time card
-    TimeCard_file = open(table,'r')
-    TimeCard = TimeCard_file.readline()
-    
-    #read the rest of the file
-    while TimeCard != '':
-        word = [line.split(',') for line in TimeCard.splitlines()]
-        names = word[0][0]
-        date = word[0][1]
-        start = word[0][7]
-        if len(word[0][6]) > 6 or len(word[0][6]) == '':
-            start = word[0][6]
-            end = '00:00 -Clocked IN'
+#logic to determine if the found clockin record date is equal to the current date else...
+        if day_check == Current_day:
+            # Update the 'Clock-Out' column in the DataFrame
+            df.iat[index, 7] = vehicle
+            df.iat[index, 8] = Clock_out_time
+            message1 = f'Congratulations you are Clocked OUT!'
         else:
-            start = word[0][-3]
-            end = word[0][-1]
+            message1 = f'An Error occured please check that you are Clocked-In before trying again.'
         
-        #Display the record
-        print('Employee Hours:', names, date, start, end)
-        #Read the next Description
-        TimeCard = TimeCard_file.readline()
-    #close the file
-    TimeCard_file.close()
+# Save the updated DataFrame back to the file
+        df.to_csv(Time_Card, index=False)
+    else:
+       message1 = f'No matching records found.'
+#add function to delete incomplete rows
+    return message1
 
 
 #fix this so it calls add function to append new data to file for clock in/clock out
@@ -248,15 +197,23 @@ def Search(EmpName_='',date=''):
                 word = line.split(',')
                 start = datetime.strptime(word[6], ' %H:%M')
                 end = datetime.strptime(word[-1].strip(), '%H:%M') if len(word[-1]) >= 5 else datetime.strptime('00:00', '%H:%M')
+                
                 hours = (end - start).seconds // 3600
                 minutes = ((end - start).seconds // 60) % 60
+                
                 if hours < 0:
                     hours = 0
                     minutes = 0
+                
                 sum_h += hours
                 sum_m += minutes
                 lst.append(line)
-    return lst
+    # Convert excess minutes to hours
+    sum_h += sum_m // 60
+    sum_m %= 60
+    total_hours = f"{sum_h}:{str(sum_m).zfill(2)}"
+    new_list = [item.strip('\n').split(',') for item in lst]
+    return new_list, total_hours
 
 
 #this function will remove unwanted data from report
@@ -355,24 +312,6 @@ def main():
             else:
                 print('\n')
                 main()
-        elif func == 'R' or func == 'r':
-            print('Are you Manager?:')
-            Mrg_emp = input("Y=Yes, Anything Else = No:")
-            Mgr= Mrg_emp.upper()
-            if (Mgr == 'YES' or Mgr == 'Y'):
-                password = getPassword()
-                if validPassword(password) == True:
-                    print(password + " is valid")
-                    TimeReport()
-                elif validPassword(password) == False:
-                    print(password + " is invalid")
-                    print('\n')
-                    main()
-            else:
-                print('\n')
-                main()
-        elif func == "Q" or func == "q":
-            quit()
         #if you press any random key it will bring you here
         else:
             print("Incorrect input please try again \n")
@@ -380,4 +319,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

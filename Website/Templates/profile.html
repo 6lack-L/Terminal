@@ -1,78 +1,64 @@
 {% extends 'base.html' %}
 {% block title %}Profile{% endblock %}
 {% block content %}
-
-
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-	<style>
-		.container {
-			display: flex;
-			justify-content: space-between;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
 
-		.card {
-			width: 80%; /* Adjust the width as needed */
-			margin-bottom: 20px;
-			padding: 10px;
-			background-color: #f2f2f2;
-			border-radius: 3px;
-		}
+        .card {
+            width: 80%;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f2f2f2;
+            border-radius: 3px;
+        }
 
-		.card table {
-			width: 100%;
-			border-collapse: collapse;
-		}
+        .card table {
+            width: 100%;
+            border-collapse: collapse;
+        }
 
-		.card table th,
-		.card table td {
-			padding: 8px;
-			border: 1px solid #ccc;
-		}
-	</style>
+        .card table th,
+        .card table td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
+
 <body>
-	<div class="card">
-	<div class="card-header">
-	<h2>Profile</h2>	
-	</div>
-	<div class="card-body">
-    <p class="card-text">
-
-	<div class="container">
-		<div class="row">
-			<div class="col-8">
-
-    <strong>Name:</strong>
-	{{ current_user.FirstName }} {{ current_user.LastName }}<br/>
-
-	<strong>Role:</strong>
-	{{ current_user.roles }}<br/>
-
-	<strong>Employee Id:</strong>
-	{{ current_user.Emp_id }}<br/>
-
-	<strong>Email:</strong>
-	{{ current_user.email }}<br/>
-
-	<strong>TimeLog:</strong>
-		<table>
-			<tr>
-				{% for col in field %}
-				<th>{{ col }}</th>
-				{% endfor %}
-			</tr>
-			{% for entry in search[::-1] %}
-			<tr>
-				{% for value in entry.split(',') %}
-					<td>{{ value }}</td>
-				{% endfor %}
-			</tr>
-			{% endfor %}
-		</table>
-	</div>
-    </p>
-
+    <div class="card">
+        <div class="card-header">
+            <h2>Profile</h2>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                            <strong>Name:</strong> {{ user.FirstName }} {{ user.LastName }}<br />
+                            <strong>Role:</strong> {{ user.roles }}<br />
+                            <strong>Employee Id:</strong> {{ user.Emp_id }}<br />
+                            <strong>Email:</strong> {{ user.email }}<br />
+                            <strong>Total Hours: {{total_hours}}</strong>
+                            <a class="btn btn-dark" href="/ViewHours">View hours</a>
+                            <a class="btn btn-dark" href="/">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
+            </p>
+        </div>
+    </div>
 </body>
 
+</html>
 {% endblock %}

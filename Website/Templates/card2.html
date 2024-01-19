@@ -16,7 +16,7 @@
 {% if user.is_authenticated %}
         <a href="/" class="btn btn-primary">Close</a>
         <a href="/S-OUT" class="btn btn-secondary">Edit</a>
-{% elif user == 1 %}
+{% elif user.roles == 'Admin' %}
         <a href="/" class="btn btn-primary">Close</a>
         <a href="/S-OUT" class="btn btn-secondary">Edit</a>
 {% else %}

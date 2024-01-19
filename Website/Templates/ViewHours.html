@@ -1,7 +1,13 @@
 {% extends 'base.html' %}
-{% block title %}Home{%endblock%}
+{% block title %}Home{% endblock %}
 {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
     <style>
         .container {
             display: flex;
@@ -9,7 +15,7 @@
         }
 
         .card {
-            width: 100%; /* Adjust the width as needed */
+            width: 100%;
             margin-bottom: 20px;
             padding: 20px;
             background-color: #f2f2f2;
@@ -39,20 +45,17 @@
         </p>
         <div class="container">
             <div class="card">
-                <h2>TimeCard</h2>
+                <h2>Total Hours: {{ total_hours }}</h2>
                 <table>
                     <tr>
-                        {% for col in field %}
+                        {% for col in df_filled.columns %}
                         <th>{{ col }}</th>
                         {% endfor %}
                     </tr>
-                    {% for entry in search[::-1] %}
+                    {% for index in range(df_filled.shape[0]-1, -1, -1) %}
                     <tr>
-                        {% for value in entry.split(',') %}
-                            <td>{{ value }}</td>
-                            {% if value == ''%}
-
-                            {% endif %}
+                        {% for col in df_filled.columns %}
+                        <td>{{ df_filled[col][index] }}</td>
                         {% endfor %}
                     </tr>
                     {% endfor %}
@@ -60,6 +63,7 @@
             </div>
         </div>
     </div>
-</body>   
+</body>
 
+</html>
 {% endblock %}

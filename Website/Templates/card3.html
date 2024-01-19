@@ -62,20 +62,20 @@
             </p>
             <div class="container">
                 <div class="card">
-                    <h2>TimeCard</h2>
+                    <h2>{{form_name}}'s Total Hours: {{total_hours}}</h2>
 
                     <table>
                         <tr>
-                            {% for col in field %}
-                            <th>{{ col }}</th>
+                            {% for col in df_filled.columns %}
+                                <th>{{ col }}</th>
                             {% endfor %}
                         </tr>
-                        {% for entry in search[::-1] %}
-                        <tr>
-                            {% for value in entry.split(',') %}
-                                <td>{{ value }}</td>
-                            {% endfor %}
-                        </tr>
+                        {% for index in range(df_filled.shape[0]-1, -1, -1) %}
+                            <tr>
+                                {% for col in df_filled.columns %}
+                                    <td>{{ df_filled[col][index] }}</td>
+                                {% endfor %}
+                            </tr>
                         {% endfor %}
                     </table>
                 </div>

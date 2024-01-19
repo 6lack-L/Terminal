@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+  Driver Directory
+{% endblock %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+            <section class="section">
+            <div class="container">
+            <img src="">
+            <br>
+            <h1 class="title">
+                Search Drivers      </h1>
+            <hr>
+            <p class="subtitle">
+                <strong>Enter Driver ID or Name</strong>
+            </p>
+            <form action="{{ url_for("views.employee_directory")}}" method="POST">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                <label for="searched">Enter Employee ID or Name</label>
+                {{ form.searched(
+                    class="form-control",
+                    placeholder="Employee ID") }}
+                </div>
+                <br/>
+                {{ form.Submit(class="btn btn-primary") }}
+            </form>
+        </div>
+      </section>
+{% endblock %}

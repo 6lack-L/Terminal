@@ -1,35 +1,92 @@
 {% extends 'base.html' %}
-
-{% block title %}
-Time Report
-{% endblock %}
-
+{% block title %}TimeCard{% endblock %}
 {% block content %}
-  <section class="section">
-    <div class="container">
-      <h1 class="title">Time Report</h1>
-      <div class="card">
-        <div class="card-content">
-          <table class="table is-bordered is-fullwidth">
-            <thead>
-              <tr>
-                {% for column in df_filled.columns %}
-                <th>{{ column }}</th>
-                {% endfor %}
-              </tr>
-            </thead>
-            <tbody>
-              {% for index, row in df_filled.iterrows() %}
-              <tr>
-                {% for column in df_filled.columns %}
-                <td>{{ row[column] }}</td>
-                {% endfor %}
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+    <head>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+
+    <body>
+        <div>
+            <br>
+            <strong><h1 class="title">Employee Hours</h1></strong>
+            <hr>
+            <p class="subtitle">
+                <div class="columns">
+                    <div class="column is-one-third">
+                        <a id="toggleButton" class="btn btn-dark" onclick="toggleErrors()" style="color: white;">View Records with Errors</a>
+                        <a class="btn btn-dark" href="/Edit">Edit</a>
+                        <a class="btn btn-dark" href="/Delete">Delete</a>
+                    </div>
+                </div>
+            </p>
+            <div class="container">
+                <div class="card" id="allDataCard">
+                    <h2>Report</h2>
+                    <div class="card">
+                        <div class="card-content">
+                            <table class="table is-bordered is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        {% for column in df_filled.columns %}
+                                            <th>{{ column }}</th>
+                                        {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for index, row in df_filled.iloc[::-1].iterrows() %}
+                                        <tr>
+                                            {% for column in df_filled.columns %}
+                                                <td>{{ row[column] }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card" id="errorsCard" style="display: none;">
+                    <div class="card-content">
+                        <p><strong>Review Errors:</strong></p>
+                        <table class="table is-bordered is-fullwidth">
+                            <thead>
+                                <tr>
+                                    {% for column in df_errors.columns %}
+                                        <th>{{ column }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for index, row in df_errors.iloc[::-1].iterrows() %}
+                                    <tr>
+                                        {% for column in df_errors.columns %}
+                                            <td>{{ row[column] }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </section>
+
+        <script>
+            function toggleErrors() {
+                var allDataCard = document.getElementById("allDataCard");
+                var errorsCard = document.getElementById("errorsCard");
+                var toggleButton = document.getElementById("toggleButton");
+        
+                if (allDataCard.style.display === "none") {
+                    allDataCard.style.display = "block";
+                    errorsCard.style.display = "none";
+                    toggleButton.textContent = "View Records with Errors";
+                } else {
+                    allDataCard.style.display = "none";
+                    errorsCard.style.display = "block";
+                    toggleButton.textContent = "Back";
+                }
+            }
+        </script>
+    </body>
 {% endblock %}
