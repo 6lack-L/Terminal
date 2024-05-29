@@ -1,15 +1,16 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from os import path
+import os
 from flask_login import LoginManager
 
 db = SQLAlchemy()
 DB_Name = "database.db"
 database = f'sqlite:///{DB_Name}'
-
+send_grid = os.environ.get('SENDGRID_API_KEY')
+secret_key = os.environ.get('TOKEN')
 def create_app(database_uri=database):
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'RMSPOPE'
+    app.config['SECRET_KEY'] = secret_key
     app.config['SQLALCHEMY_DATABASE_URI'] = database_uri
     db.init_app(app)
 
@@ -35,6 +36,6 @@ def create_app(database_uri=database):
     return app
 
 def create_database(app):
-    if not path.exists('/Website/' + DB_Name):
+    if not os.path.exists('/Website/' + DB_Name):
         db.create_all(app=app)
         print('Created DataBase!')

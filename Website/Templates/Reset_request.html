@@ -1,31 +1,31 @@
 {% extends 'base.html' %}
-
 {% block title %}
-  Home
+Reset Password
 {% endblock %}
-
 {% block content %}
   <section class="section">
     <div class="container">
       <img src="">
       <br>
       <h1 class="title">
-        Search Users
+        Reset Password
       </h1>
       <hr>
       <p class="subtitle">
-        <strong>Enter a name to view previous Records</strong>
+        <strong>Please Enter your Email</strong>
       </p>
-      <form action="{{ url_for("views.find")}}" method="POST">
+      <form action="" method="POST">
         {{ form.hidden_tag() }}
         <div class="form-group">
-          <label for="searched">Enter Your Employee ID</label>
+          <label for="form.searched">Enter Your E-mail</label>
           {{ form.searched(
             class="form-control",
-            placeholder="Employee ID") }}
+            placeholder="E-mail") }}
         </div>
         <br/>
-        {{ form.Submit(class="btn btn-primary", href="/Card3") }}
+        {{ form.Submit(
+          value="Send",
+          class="btn btn-primary") }}
       </form>
     </div>
   </section>

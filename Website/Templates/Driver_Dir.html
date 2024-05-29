@@ -6,27 +6,81 @@
 {% block content %}
   <section class="section">
     <div class="container">
-            <section class="section">
-            <div class="container">
-            <img src="">
-            <br>
-            <h1 class="title">
-                Search Drivers      </h1>
+      <section class="section">
+        <div class="container">
+          <img src="">
+          <br>
+          <h1 class="title">
+            Search Drivers
+          </h1>
+          <hr>
+          <p class="subtitle">
+            <strong>Enter Driver ID or Name</strong>
+          </p>
+          <form action="{{ url_for("views.employee_directory")}}" method="POST">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+              <label for="searched">Enter Employee ID or Name</label>
+              {{ form.searched(
+                class="form-control",
+                placeholder="Employee ID") }}
+            </div>
+            <br/>
+            {{ form.Submit(class="btn btn-primary") }}
+          </form>
+          <div>
             <hr>
-            <p class="subtitle">
-                <strong>Enter Driver ID or Name</strong>
-            </p>
-            <form action="{{ url_for("views.employee_directory")}}" method="POST">
-                {{ form.hidden_tag() }}
-                <div class="form-group">
-                <label for="searched">Enter Employee ID or Name</label>
-                {{ form.searched(
-                    class="form-control",
-                    placeholder="Employee ID") }}
-                </div>
-                <br/>
-                {{ form.Submit(class="btn btn-primary") }}
-            </form>
-        </div>
-      </section>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Emp_id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in users.items %}
+                <tr>
+                  <td>{{ user.Emp_id }}</td>
+                  <td>{{ user.FirstName }}</td>
+                  <td>{{ user.LastName }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <!-- Pagination buttons -->
+          <div class="pagination" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+            {% if users.has_prev %}
+              <a href="{{ url_for('views.employee_directory', page=users.prev_num) }}" class="btn btn-primary" style="padding: 10px; background-color: #007bff; color: white; text-decoration: none;">Previous</a>
+            {% endif %}
+            <span style="font-size: 18px;">Page {{ users.page }} of {{ users.pages }}</span>
+            {% if users.has_next %}
+              <a href="{{ url_for('views.employee_directory', page=users.next_num) }}" class="btn btn-primary" style="padding: 10px; background-color: #007bff; color: white; text-decoration: none;">Next</a>
+            {% endif %}
+          </div>
+        </section>
+        <style>
+          .table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white; /* Updated background color */
+          }
+
+          .table th,
+          .table td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+          }
+
+          .table th {
+            background-color: #f2f2f2;
+          }
+
+          .table tr:hover {
+            background-color: #f2f2f2;
+          }
+        </style>
+      </div>
 {% endblock %}

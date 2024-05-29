@@ -73,17 +73,17 @@
                         <form action="{{ url_for('views.confirm_deletion') }}" method="POST">
                             {{ form.hidden_tag() }}
                             <div class="field has-addons">
-                                <p>
-                                    Search Date to Delete Hours
-                                </p>
+                                <h6>
+                                    Search Date to Delete Hours OR Enter 'delete' As The Date to Remove All Hours for Employee.
+                                </h6>
                                 <div class="control">
-                                        {{ form.Emp_ID(
+                                        {{ form.emp_id(
                                                 class="form-control",
-                                                placeholder="Date") }}
+                                                placeholder="Employee ID") }}
                                 </div>
                                 </br>
                                 <div class="control">
-                                        {{ form.Date(
+                                        {{ form.date(
                                                 class="form-control",
                                                 placeholder="Date") }}
                                 </div>
@@ -117,7 +117,7 @@
                         </tr>
                         {% endfor %}
                     {% else %}    
-                    <p>No records found.</p>
+                        <p>No records found.</p>
                     {% endif %}
                 </table>
                 <br/>

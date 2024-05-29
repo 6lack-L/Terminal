@@ -1,13 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Clock-IN{%endblock%}
 {% block content %}
-
-{% if Employee %}
 <h1 class="title">
-    
     RMS POPE TimeCard System
 </h1>
-{% else%}
   <form action="{{ url_for("views.Clock_in")}}" method="POST">
     {{ form.hidden_tag() }}
     <h3 align="center">Clock-IN</h3>
@@ -18,16 +14,8 @@
       placeholder="Employee ID") }}
       <br/>
     </div>
-
     <div class="form-group">
       <label for="EmpDes">Enter Work Type</label>
-<!--      <input
-        type="text"
-        class="form-control"
-        id="Clock_input"
-        name="EmpDes"
-        placeholder="Description"
-      /> -->
       {{ form.Description(
       class="form-control",
       placeholder="Description") }}
@@ -35,13 +23,6 @@
     </div>
     <div class="form-group">
       <label for="EmpVeh">Enter Vehicle</label>
-<!--      <input
-        type="text"
-        class="form-control"
-        id="Clock_input"
-        name="EmpVeh"
-        placeholder="Enter Vehicle"
-      /> -->
       {{ form.Vehicle(
       class="form-control",
       placeholder="Enter Vehicle") }}
@@ -49,13 +30,6 @@
     </div>
     <div class="form-group">
       <label for="EmpRuns">Enter Runs</label>
-<!--      <input
-        type="text"
-        class="form-control"
-        id="Clock_input"
-        name="EmpRuns"
-        placeholder="Amount of Runs"
-      /> -->
       {{ form.Runs(
       class="form-control",
       placeholder="Amount of Runs") }}
@@ -63,13 +37,6 @@
     </div>
     <div class="form-group">
         <label for="EmpArea">Enter Area</label>
-       <!-- <input
-          type="text"
-          class="form-control"
-          id="Clock_input"
-          name="EmpArea"
-          placeholder="Location"
-        /> -->
         {{ form.Location(
         class="form-control",
         placeholder="Location") }}
@@ -78,9 +45,5 @@
     <br/>
     {{ form.submit(class="btn
      btn-primary", href="/Card") }}
-    <!-- <button href="/" action="{{ url_for("views.Card")}}" type="button" class="btn btn-danger">Submit</button>
-    -->
   </form>
-
-{% endif%}
 {% endblock %}

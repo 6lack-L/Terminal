@@ -32,10 +32,21 @@
             padding: 8px;
             border: 1px solid #ccc;
         }
+        .back-button {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: auto;
+            padding: 35px 75px;  /* Adjust the padding to fit the text */
+            width: auto;
+        }
     </style>
 </head>
-
 <body>
+    {% if current_user.roles == 'Admin' %}
+    <div class="back-button">
+        <a href="/Directory" class="btn btn-dark">Back</a>
+    </div>
+    {% endif %}
     <div class="card">
         <div class="card-header">
             <h2>Profile</h2>
@@ -48,10 +59,18 @@
                             <strong>Name:</strong> {{ user.FirstName }} {{ user.LastName }}<br />
                             <strong>Role:</strong> {{ user.roles }}<br />
                             <strong>Employee Id:</strong> {{ user.Emp_id }}<br />
+                        {% if current_user.roles == 'Admin'%}
+                            <strong>Email:</strong><a type="email" href='mailto:{{user.email}}'> {{ user.email }}</a><br />
+                            <strong>Phone Number:</strong><a type="phone" href='/'> {{ user.phone_number }}</a><br />
+                        {% else %}
                             <strong>Email:</strong> {{ user.email }}<br />
+                            <strong>Phone number:</strong> {{ user.phone_number }}<br /> 
+                        {% endif%}
                             <strong>Total Hours: {{total_hours}}</strong>
                             <a class="btn btn-dark" href="/ViewHours">View hours</a>
-                            <a class="btn btn-dark" href="/">Edit Profile</a>
+                        {% if current_user.id == user.id %}
+                            <a class="btn btn-dark" href="/Edit_Profile">Edit Profile</a>
+                        {% endif %}
                         </div>
                     </div>
                 </div>
