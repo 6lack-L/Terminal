@@ -3,25 +3,24 @@
 This directory contains the source code for the Terminal web app.
 
 ## Overview
-
-The Terminal web app is a command-line interface (CLI) tool that allows users to interact with a remote server through a web browser. It provides a familiar command-line environment with features such as command execution, file management, and remote server access.
+The RMS Terminal Application is a Centralized data platform that collects all other sources of data (geotab, asana, elogs, working hours) modifies and returns metrics and important information back quickly significantly reducing 
 
 ## Features
 
 Main functions:
-  •	A system to easily track control and mange employee hours/kms for work week. review request features to allow a simple clear process for internal payment issues
-  •	payment dashboard (possible view options to view in real time expected pay for time/km worked.) calculate estimated weekly payroll expense.
-  •	monthly report of hours and payment per individuals and companywide for taxes.
-  •	IP locked to specific RMS Locations.
+  - A system to easily track control and mange employee hours/kms for work week. review request features to allow a simple clear process for internal payment issues
+  - payment dashboard (possible view options to view in real time expected pay for time/km worked.) calculate estimated weekly payroll expense.
+  - monthly report of hours and payment per individuals and companywide for taxes.
+  - IP locked to specific RMS Locations.
 Features:
-  •	database access point for all tracked vehicle documents, automatic notifications.
-  •	google calendar for vehicle reminders.
-  •	employee contact database.
-  •	quick access to Geotab, E-solutions, and Asana.
-  •	Automatic weather text notifications to drivers.
-  •	Preventative measures for extended clock in hours, Auto Clock-out
-  •	Mealtime clock-out
-  •	*Text reminders before shifts to clock in after set time flag employee as no show and send alert back for new driver
+  - database access point for all tracked vehicle documents, automatic notifications.
+  - google calendar for vehicle reminders.
+  - employee contact database.
+  - quick access to Geotab, E-solutions, and Asana.
+  - Automatic weather text notifications to drivers.
+  - Preventative measures for extended clock in hours, Auto Clock-out
+  - Mealtime clock-out
+  - *Text reminders before shifts to clock in after set time flag employee as no show and send alert back for new driver
 
 ## Installation
 
