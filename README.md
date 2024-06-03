@@ -8,9 +8,20 @@ The Terminal web app is a command-line interface (CLI) tool that allows users to
 
 ## Features
 
-- Command execution: Users can run commands on the remote server directly from the web app.
-- File management: Users can navigate the file system, create, delete, and modify files and directories.
-- Remote server access: The web app connects to a remote server using secure protocols (e.g., SSH) to ensure data privacy and security.
+Main functions:
+  •	A system to easily track control and mange employee hours/kms for work week. review request features to allow a simple clear process for internal payment issues
+  •	payment dashboard (possible view options to view in real time expected pay for time/km worked.) calculate estimated weekly payroll expense.
+  •	monthly report of hours and payment per individuals and companywide for taxes.
+  •	IP locked to specific RMS Locations.
+Features:
+  •	database access point for all tracked vehicle documents, automatic notifications.
+  •	google calendar for vehicle reminders.
+  •	employee contact database.
+  •	quick access to Geotab, E-solutions, and Asana.
+  •	Automatic weather text notifications to drivers.
+  •	Preventative measures for extended clock in hours, Auto Clock-out
+  •	Mealtime clock-out
+  •	*Text reminders before shifts to clock in after set time flag employee as no show and send alert back for new driver
 
 ## Installation
 
