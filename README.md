@@ -18,8 +18,10 @@ To install and run the Terminal web app locally, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/your-username/terminal-web-app.git`
 2. Navigate to the project directory: `cd terminal-web-app`
-3. Install dependencies: `npm install`
-4. Start the web app: `npm start`
+4. create vitual environment: `python -m venv /path/to/new/virtual/environment`
+6. start virtual environment : `source venv/bin/activate`
+7. Install dependencies: `pip install -r requirements`
+8. Start the web app: `python main.py`
 
 ## Usage
 
