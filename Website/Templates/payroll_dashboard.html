@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Payroll Dashboard{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payroll Dashboard</title>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="title">Payroll Dashboard</h1>
+        <hr>
+      </div>
+    </div>
+  
+  </div>
+        <div class="container">
+            <div class="card">
+                <h2>Total Worked Hours: {{ total_hours }} | Total Payroll Payment: {{ total_pay}}</h2>
+                <table>
+                    <tr>
+                        {% for col in df_filled.columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                    {% for index in range(df_filled.shape[0]-1, -1, -1) %}
+                    <tr>
+                        {% for col in df_filled.columns %}
+                        <td>{{ df_filled[col][index] }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <style>
+          .container {
+              display: flex;
+              justify-content: space-between;
+          }
+  
+          .card {
+              width: 100%;
+              margin-bottom: 20px;
+              padding: 20px;
+              background-color: #f2f2f2;
+              border-radius: 5px;
+          }
+  
+          .card table {
+              width: 100%;
+              border-collapse: collapse;
+          }
+  
+          .card table th,
+          .card table td {
+              padding: 8px;
+              border: 1px solid #ccc;
+          }
+      </style>  
+</head>
+
+{% endblock %}

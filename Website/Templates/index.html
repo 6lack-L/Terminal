@@ -13,19 +13,21 @@
         <br>
         <p>Please select an option below in the RMS Time Card System</p>
         <hr>
-        {% if current_user.roles == 'Admin' %}
+        {% if current_user.active == 0 %}
           <a class="btn btn-success" href="/Clock-IN">Clock-IN</a>
           <a class="btn btn-danger" href="/Clock-Out">Clock-OUT</a>
-          <br>
-          <hr>
-          <a class="btn btn-dark" href="/search">Search Records</a>
-          <a class="btn btn-dark" href="/Report">Report</a>
-        {% elif current_user.is_authenticated %}
-          <a class="btn btn-success" href="/Clock-IN">Clock-IN</a>
+        {% elif current_user.active == 1 and current_user.is_authenticated %}
+          <a class="btn btn-dark" href="/Meal_Time">Meal Time</a>
           <a class="btn btn-danger" href="/Clock-Out">Clock-Out</a>
         {% endif %}
+          <br>
+          <hr>
+        {% if current_user.roles == 'Admin' %}
+          <a class="btn btn-dark" href="/Directory">Search Records</a>
+          <a class="btn btn-dark" href="/Report">Report</a>
         <br>
         <hr>
+        {% endif %}
         {% if current_user.is_authenticated %}
           <strong>Other Applications</strong>
           <hr>

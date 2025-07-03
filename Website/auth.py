@@ -8,10 +8,15 @@ import random
 from Website import Timesheet as T, models
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
-
-
 auth = Blueprint('auth', __name__)
-
+Admin_list = [
+    'fernando@rmspope.com',
+    'lodo@rmspope.com',
+    'matthew@rmspope.com',
+    'stephen@rmspope.com',
+    'accounting@rmspope.com'
+   
+    ]
 def generate_employee_code(first_name, last_name):
     # Extract the first letters of the first and last names
     first_initial = first_name[0].upper()
@@ -85,10 +90,15 @@ def sign_up():
         
         user = User.query.filter_by(email=Fe).first()
         message, check= verify(user,ph,Fn,ln,Fp,password1,password2)
+        for user in Admin_list:
+            if Fe == user:
+                Admin = 'Admin'
+            else:
+                Admin = 'User'
         if check == True:
             try:
                 emp_id = generate_employee_code(Fn,ln)
-                new_user = User(email=Fe,phone_number=ph, roles='', Emp_id=emp_id,FirstName=Fn, LastName=ln,password=generate_password_hash(Fp, method='sha256'))
+                new_user = User(email=Fe,phone_number=ph, roles=Admin, Emp_id=emp_id,FirstName=Fn, LastName=ln,password=generate_password_hash(Fp, method='sha256'))
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user, remember=True)
