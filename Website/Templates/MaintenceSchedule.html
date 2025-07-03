@@ -1,9 +1,31 @@
 {% extends 'base.html' %}
-{% block title %}Maintanence Schedule{% endblock %}
+{% block title %}Maintenance Schedule{% endblock %}
 {% block content %}
-    <head>
-        <iframe src="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=America%2FSt_Johns&showNav=1&showPrint=0&showTabs=0&title=Maintenance%20Schedule&showCalendars=0&showTz=1&src=Y180ZDA0NzY1M2M4OWJjZDFiMDhmMWIzZDRkYzA0NzAxODkwOTA4NjgwZDAzNTI5ZWJkNWYzNzE4NmY2ZWZiMjgyQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20&color=%23D81B60" style="border:solid 1px #777" width="800" height="600" frameborder="0" scrolling="no"></iframe>    
-    </head>
-<body>
-</body>
+<style>
+    body {
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        min-height: 100vh; /* Minimum height of 100% of the viewport height */
+        margin: 0; /* Remove default margin */
+    }
+    #resizable {
+        width: 90%; /* Initial width */
+        height: 720px; /* Initial height */
+        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Optional: adds a subtle shadow for better visibility */
+        resize: both; /* Allows resizing both horizontally and vertically */
+        overflow: auto; /* Required for resize to work */
+        display: flex; /* Use flex to center the iframe */
+        justify-content: center; /* Center iframe horizontally */
+        align-items: center; /* Center iframe vertically */
+    }
+    .styled-calendar-container {
+        width: 100%; /* Adjusted width to fill the container */
+        height: 100%; /* Adjusted height to fill the container */
+        border: none; /* No border for the iframe */
+    }
+</style>
+<div id="resizable">
+    <iframe src="https://embed.styledcalendar.com/#bpEVXaYltq3rlwNJ39Zc" title="Styled Calendar" class="styled-calendar-container" data-cy="calendar-embed-iframe"></iframe>
+</div>
 {% endblock %}
